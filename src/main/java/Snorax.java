@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Snorax {
@@ -15,6 +16,9 @@ public class Snorax {
 
         Scanner sc = new Scanner(System.in);
 
+        // List to store echos
+        ArrayList<String> strings = new ArrayList<>();
+
         // Loop continuously to accept input
         while (true) {
             String input = sc.nextLine(); // Read user input
@@ -25,9 +29,15 @@ public class Snorax {
                 System.out.println(bye);
                 System.out.println(line);
                 break; // Exit loop
+            } else if (input.equals("list")) {
+                // output the list
+                for (int i = 1; i <= strings.size(); i++) {
+                    System.out.println(i +  ". " + strings.get(i - 1));
+                }
             } else {
                 // Echo the command if its not bye
-                System.out.println(input);
+                strings.add(input);
+                System.out.println("added: " + input);
                 System.out.println(line);
             }
         }
