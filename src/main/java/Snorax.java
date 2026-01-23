@@ -6,11 +6,32 @@ public class Snorax {
         String greetings = "Hello! I'm Snorax";
         String question = "What can I do for you?";
         String bye = "Goodnight. Time for a nap!";
+
+        // Print initial greeting
         System.out.println(line + "\n"
                             + greetings + "\n"
                             + question + "\n"
-                            + line + "\n"
-                            + bye + "\n"
                             + line + "\n");
+
+        Scanner sc = new Scanner(System.in);
+
+        // Loop continuously to accept input
+        while (true) {
+            String input = sc.nextLine(); // Read user input
+
+            System.out.println(line); // print divider before response
+
+            if (input.equals("bye")) {
+                System.out.println(bye);
+                System.out.println(line);
+                break; // Exit loop
+            } else {
+                // Echo the command if its not bye
+                System.out.println(input);
+                System.out.println(line);
+            }
+        }
+
+        sc.close(); //close the scanner
     }
 }
