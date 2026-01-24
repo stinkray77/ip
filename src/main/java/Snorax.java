@@ -65,6 +65,15 @@ public class Snorax {
                 System.out.println("  " + task);
                 System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 System.out.println(line);
+            } else if (input.startsWith("event ")) {
+                String remaining = input.substring(6);
+                String[] parts = remaining.split(" /from | /to ");
+                Task task = new Event(parts[0], parts[1], parts[2]);
+                tasks.add(task);
+                System.out.println("ok added this task liao:");
+                System.out.println("  " + task);
+                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                System.out.println(line);
             } else {
                 // Add and Echo the command if its not bye
                 Task task = new Task(input);
