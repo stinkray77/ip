@@ -17,7 +17,7 @@ public class Snorax {
         Scanner sc = new Scanner(System.in);
 
         // List to store echos
-        ArrayList<String> strings = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
 
         // Loop continuously to accept input
         while (true) {
@@ -31,12 +31,13 @@ public class Snorax {
                 break; // Exit loop
             } else if (input.equals("list")) {
                 // output the list
-                for (int i = 1; i <= strings.size(); i++) {
-                    System.out.println(i +  ". " + strings.get(i - 1));
+                for (int i = 1; i <= tasks.size(); i++) {
+                    System.out.println(i +  ". " + tasks.get(i - 1).getDescription());
                 }
             } else {
-                // Echo the command if its not bye
-                strings.add(input);
+                // Add and Echo the command if its not bye
+                Task task = new Task(input);
+                tasks.add(task);
                 System.out.println("added: " + input);
                 System.out.println(line);
             }
