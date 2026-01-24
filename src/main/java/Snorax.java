@@ -35,19 +35,27 @@ public class Snorax {
                     System.out.println(i +  ". " + tasks.get(i - 1).toString());
                 }
                 System.out.println(line);
-            } else if (input.contains("unmark")) {
+            } else if (input.startsWith("unmark ")) {
                 String[] splitted = input.split(" ");
                 int index = Integer.parseInt(splitted[1]);
                 tasks.get(index - 1).markAsNotDone();
-                System.out.println("OK, I've marked this task as not done yet:\n" 
+                System.out.println("ok marked as undone u lazy:\n" 
                                 + tasks.get(index - 1).toString());
                 System.out.println(line);
-            } else if (input.contains("mark")) {
+            } else if (input.startsWith("mark ")) {
                 String[] splitted = input.split(" ");
                 int index = Integer.parseInt(splitted[1]);
                 tasks.get(index - 1).markAsDone();
-                System.out.println("Nice! I've marked this task as done:\n" 
+                System.out.println("good job, marked as done:\n" 
                                 + tasks.get(index - 1).toString());
+                System.out.println(line);
+            } else if (input.startsWith("todo ")) {
+                String description = input.substring(5);
+                Task task = new Todo(description);
+                tasks.add(task);
+                System.out.println("ok added this task liao.");
+                System.out.println(" " + task);
+                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 System.out.println(line);
             } else {
                 // Add and Echo the command if its not bye
