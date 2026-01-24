@@ -53,8 +53,16 @@ public class Snorax {
                 String description = input.substring(5);
                 Task task = new Todo(description);
                 tasks.add(task);
-                System.out.println("ok added this task liao.");
+                System.out.println("ok added this task liao:");
                 System.out.println(" " + task);
+                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                System.out.println(line);
+            } else if (input.startsWith("deadline ")) {
+                String[] parts = input.substring(9).split(" /by ");
+                Task task = new Deadline(parts[0], parts[1]);
+                tasks.add(task);
+                System.out.println("ok added this task liao:");
+                System.out.println("  " + task);
                 System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 System.out.println(line);
             } else {
