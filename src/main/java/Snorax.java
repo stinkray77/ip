@@ -32,8 +32,23 @@ public class Snorax {
             } else if (input.equals("list")) {
                 // output the list
                 for (int i = 1; i <= tasks.size(); i++) {
-                    System.out.println(i +  ". " + tasks.get(i - 1).getDescription());
+                    System.out.println(i +  ". " + tasks.get(i - 1).toString());
                 }
+                System.out.println(line);
+            } else if (input.contains("unmark")) {
+                String[] splitted = input.split(" ");
+                int index = Integer.parseInt(splitted[1]);
+                tasks.get(index - 1).markAsNotDone();
+                System.out.println("OK, I've marked this task as not done yet:\n" 
+                                + tasks.get(index - 1).toString());
+                System.out.println(line);
+            } else if (input.contains("mark")) {
+                String[] splitted = input.split(" ");
+                int index = Integer.parseInt(splitted[1]);
+                tasks.get(index - 1).markAsDone();
+                System.out.println("Nice! I've marked this task as done:\n" 
+                                + tasks.get(index - 1).toString());
+                System.out.println(line);
             } else {
                 // Add and Echo the command if its not bye
                 Task task = new Task(input);
