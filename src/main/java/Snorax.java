@@ -36,6 +36,15 @@ public class Snorax {
                         System.out.println(i +  ". " + tasks.get(i - 1).toString());
                     }
                     System.out.println(line);
+                } else if (input.startsWith("delete ")) {
+                    String[] splitted = input.split(" ");
+                    int index = Integer.parseInt(splitted[1]);
+                    Task removedTask = tasks.get(index - 1);
+                    tasks.remove(index - 1);
+                    System.out.println("done bro removed task:");
+                    System.out.println("  " + removedTask.toString());
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    System.out.println(line);
                 } else if (input.startsWith("unmark ")) {
                     String[] splitted = input.split(" ");
                     int index = Integer.parseInt(splitted[1]);
