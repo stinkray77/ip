@@ -26,75 +26,94 @@ public class Snorax {
 
                 System.out.println(line); // print divider before response
 
-                if (input.equals("bye")) {
-                    System.out.println(bye);
-                    System.out.println(line);
-                    break; // Exit loop
-                } else if (input.equals("list")) {
-                    // output the list
-                    for (int i = 1; i <= tasks.size(); i++) {
-                        System.out.println(i +  ". " + tasks.get(i - 1).toString());
-                    }
-                    System.out.println(line);
-                } else if (input.startsWith("delete ")) {
-                    String[] splitted = input.split(" ");
-                    int index = Integer.parseInt(splitted[1]);
-                    Task removedTask = tasks.get(index - 1);
-                    tasks.remove(index - 1);
-                    System.out.println("done bro removed task:");
-                    System.out.println("  " + removedTask.toString());
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
-                } else if (input.startsWith("unmark ")) {
-                    String[] splitted = input.split(" ");
-                    int index = Integer.parseInt(splitted[1]);
-                    tasks.get(index - 1).markAsNotDone();
-                    System.out.println("ok marked as undone u lazy:\n" 
-                                    + tasks.get(index - 1).toString());
-                    System.out.println(line);
-                } else if (input.startsWith("mark ")) {
-                    String[] splitted = input.split(" ");
-                    int index = Integer.parseInt(splitted[1]);
-                    tasks.get(index - 1).markAsDone();
-                    System.out.println("good job, marked as done:\n" 
-                                    + tasks.get(index - 1).toString());
-                    System.out.println(line);
-                } else if (input.startsWith("todo ")) {
-                    String description = input.substring(5);
-                    if (description.isEmpty()) {
-                        throw new SnoraxException("cannot be empty bro");
-                    }
-                    Task task = new Todo(description);
-                    tasks.add(task);
-                    System.out.println("ok added this task liao:");
-                    System.out.println(" " + task);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
-                } else if (input.startsWith("deadline ")) {
-                    String[] parts = input.substring(9).split(" /by ");
-                    if (parts.length < 2 || parts[0].trim().isEmpty()) {
-                        throw new SnoraxException("cannot be empty bro");
-                    }
-                    Task task = new Deadline(parts[0], parts[1]);
-                    tasks.add(task);
-                    System.out.println("ok added this task liao:");
-                    System.out.println("  " + task);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
-                } else if (input.startsWith("event ")) {
-                    String remaining = input.substring(6);
-                    String[] parts = remaining.split(" /from | /to ");
-                    if (parts.length < 2 || parts[0].trim().isEmpty()) {
-                        throw new SnoraxException("cannot be empty bro");
-                    }
-                    Task task = new Event(parts[0], parts[1], parts[2]);
-                    tasks.add(task);
-                    System.out.println("ok added this task liao:");
-                    System.out.println("  " + task);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
-                } else {
-                    throw new SnoraxException("idk what that means, goodnight");
+                Command command = Command.parse(input);
+
+                switch (command) {
+                    case BYE:
+                        System.out.println(bye);
+                        System.out.println(line);
+                        sc.close();
+                        return;
+
+                    case LIST:
+                        // output the list
+                        for (int i = 1; i <= tasks.size(); i++) {
+                            System.out.println(i +  ". " + tasks.get(i - 1).toString());
+                        }
+                        System.out.println(line);
+                        break;
+
+                    case DELETE:
+                        String[] splitted = input.split(" ");
+                        int index = Integer.parseInt(splitted[1]);
+                        Task removedTask = tasks.get(index - 1);
+                        tasks.remove(index - 1);
+                        System.out.println("done bro removed task:");
+                        System.out.println("  " + removedTask.toString());
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println(line);
+                        break;
+
+                    case UNMARK:
+                        String[] unmarkSplit = input.split(" ");
+                        int unmarkIndex = Integer.parseInt(unmarkSplit[1]);
+                        tasks.get(unmarkIndex - 1).markAsNotDone();
+                        System.out.println("ok marked as undone u lazy:\n" 
+                                        + tasks.get(unmarkIndex - 1).toString());
+                        System.out.println(line);
+                        break;
+
+                    case MARK:
+                        String[] markSplit = input.split(" ");
+                        int markIndex = Integer.parseInt(markSplit[1]);
+                        tasks.get(markIndex - 1).markAsDone();
+                        System.out.println("good job, marked as done:\n" 
+                                        + tasks.get(markIndex - 1).toString());
+                        System.out.println(line);
+                        break;
+
+                    case TODO:
+                        String description = input.substring(5);
+                        if (description.isEmpty()) {
+                            throw new SnoraxException("cannot be empty bro");
+                        }
+                        Task task = new Todo(description);
+                        tasks.add(task);
+                        System.out.println("ok added this task liao:");
+                        System.out.println(" " + task);
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println(line);
+                        break;
+
+                    case DEADLINE:
+                        String[] parts = input.substring(9).split(" /by ");
+                        if (parts.length < 2 || parts[0].trim().isEmpty()) {
+                            throw new SnoraxException("cannot be empty bro");
+                        }
+                        Task deadlineTask = new Deadline(parts[0], parts[1]);
+                        tasks.add(deadlineTask);
+                        System.out.println("ok added this task liao:");
+                        System.out.println("  " + deadlineTask);
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println(line);
+                        break;
+
+                    case EVENT:
+                        String remaining = input.substring(6);
+                        String[] eventParts = remaining.split(" /from | /to ");
+                        if (eventParts.length < 2 || eventParts[0].trim().isEmpty()) {
+                            throw new SnoraxException("cannot be empty bro");
+                        }
+                        Task eventTask = new Event(eventParts[0], eventParts[1], eventParts[2]);
+                        tasks.add(eventTask);
+                        System.out.println("ok added this task liao:");
+                        System.out.println("  " + eventTask);
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println(line);
+                        break;
+
+                    case UNKNOWN:
+                        throw new SnoraxException("idk what that means, goodnight");
                 }
             } catch (SnoraxException e) {
                 System.out.println(e.getMessage());
@@ -110,6 +129,5 @@ public class Snorax {
                 System.out.println(line);
             }
         }
-        sc.close(); //close the scanner
     }
 }
