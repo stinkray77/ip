@@ -8,6 +8,10 @@ public class Snorax {
         String question = "What can I do for you?";
         String bye = "Goodnight. Time for a nap!";
 
+        Storage storage = new Storage("./data/snorax.txt");
+        ArrayList<Task> tasks = new ArrayList<>();
+        try { tasks = storage.load(); } catch (SnoraxException e) { }
+
         // Print initial greeting
         System.out.println(line + "\n"
                             + greetings + "\n"
@@ -16,8 +20,6 @@ public class Snorax {
 
         Scanner sc = new Scanner(System.in);
 
-        // List to store echos
-        ArrayList<Task> tasks = new ArrayList<>();
 
         // Loop continuously to accept input
         while (true) {
@@ -48,6 +50,7 @@ public class Snorax {
                         int index = Integer.parseInt(splitted[1]);
                         Task removedTask = tasks.get(index - 1);
                         tasks.remove(index - 1);
+                        storage.save(tasks);
                         System.out.println("done bro removed task:");
                         System.out.println("  " + removedTask.toString());
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -58,6 +61,7 @@ public class Snorax {
                         String[] unmarkSplit = input.split(" ");
                         int unmarkIndex = Integer.parseInt(unmarkSplit[1]);
                         tasks.get(unmarkIndex - 1).markAsNotDone();
+                        storage.save(tasks);
                         System.out.println("ok marked as undone u lazy:\n" 
                                         + tasks.get(unmarkIndex - 1).toString());
                         System.out.println(line);
@@ -67,6 +71,7 @@ public class Snorax {
                         String[] markSplit = input.split(" ");
                         int markIndex = Integer.parseInt(markSplit[1]);
                         tasks.get(markIndex - 1).markAsDone();
+                        storage.save(tasks);
                         System.out.println("good job, marked as done:\n" 
                                         + tasks.get(markIndex - 1).toString());
                         System.out.println(line);
@@ -79,6 +84,7 @@ public class Snorax {
                         }
                         Task task = new Todo(description);
                         tasks.add(task);
+                        storage.save(tasks);
                         System.out.println("ok added this task liao:");
                         System.out.println(" " + task);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -92,6 +98,7 @@ public class Snorax {
                         }
                         Task deadlineTask = new Deadline(parts[0], parts[1]);
                         tasks.add(deadlineTask);
+                        storage.save(tasks);
                         System.out.println("ok added this task liao:");
                         System.out.println("  " + deadlineTask);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
