@@ -31,6 +31,6 @@ public class Deadline extends Task {
     
     @Override
     public String toString() {
-        return "[" + TaskType.DEADLINE.getSymbol() + "]" + super.toString() + " (by: " + by + ")";
+        return "[" + TaskType.DEADLINE.getSymbol() + "]" + super.toString() + " (by: " + by.format(OUTPUT_FORMAT) + ")";
     }
 }
