@@ -113,6 +113,7 @@ public class Snorax {
                         }
                         Task eventTask = new Event(eventParts[0], eventParts[1], eventParts[2]);
                         tasks.add(eventTask);
+                        storage.save(tasks);
                         System.out.println("ok added this task liao:");
                         System.out.println("  " + eventTask);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
