@@ -1,4 +1,11 @@
-import commands.Command;
+package snorax;
+
+import snorax.command.Command;
+import snorax.exception.SnoraxException;
+import snorax.parser.Parser;
+import snorax.storage.Storage;
+import snorax.tasklist.TaskList;
+import snorax.ui.Ui;
 
 public class Snorax {
     private Storage storage;
