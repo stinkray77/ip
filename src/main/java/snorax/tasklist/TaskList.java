@@ -1,4 +1,7 @@
+package snorax.tasklist;
+
 import java.util.ArrayList;
+import snorax.task.Task;
 
 public class TaskList {
     private ArrayList<Task> tasks;

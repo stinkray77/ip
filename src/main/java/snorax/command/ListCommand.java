@@ -1,8 +1,8 @@
-package commands;
+package snorax.command;
 
-import Storage;
-import TaskList;
-import Ui;
+import snorax.storage.Storage;
+import snorax.tasklist.TaskList;
+import snorax.ui.Ui;
 
 public class ListCommand extends Command {
     @Override

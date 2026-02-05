@@ -1,11 +1,8 @@
-import commands.AddCommand;
-import commands.DeleteCommand;
-import commands.ExitCommand;
-import commands.ListCommand;
-import commands.MarkCommand;
-import commands.UnmarkCommand;
+package snorax.parser;
 
-import commands.Command;
+import snorax.command.*;
+import snorax.exception.SnoraxException;
+import snorax.task.*;
 
 public class Parser {
     public static Command parse(String input) throws SnoraxException {
