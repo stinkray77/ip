@@ -10,7 +10,7 @@ public class Parser {
             throw new SnoraxException("give valid index");
         }
         try {
-            return Integer.parseInt(parts[1] - 1); // Convert to 0-index
+            return Integer.parseInt(parts[1]) - 1; // Convert to 0-index
         } catch (NumberFormatException e) {
             throw new SnoraxException("give valid index");
         }
