@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import snorax.task.Task;
 
 /**
- * Manages a list of tasks.
- * Provides methods to add, delete, retrieve, and get the size of the task list.
+ * Represents a list of tasks.
+ * Provides operations to add, delete, and retrieve tasks.
  */
 public class TaskList {
     private ArrayList<Task> tasks;
@@ -18,7 +18,7 @@ public class TaskList {
     }
 
     /**
-     * Constructs a TaskList with the specified list of tasks.
+     * Constructs a TaskList with the given list of tasks.
      *
      * @param tasks The initial list of tasks.
      */
@@ -40,7 +40,6 @@ public class TaskList {
      *
      * @param index The index of the task to delete.
      * @return The deleted task.
-     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public Task deleteTask(int index) {
         return tasks.remove(index);
@@ -51,7 +50,6 @@ public class TaskList {
      *
      * @param index The index of the task to retrieve.
      * @return The task at the specified index.
-     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public Task getTask(int index) {
         return tasks.get(index);

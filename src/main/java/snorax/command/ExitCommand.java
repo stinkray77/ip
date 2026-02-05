@@ -6,17 +6,15 @@ import snorax.ui.Ui;
 
 /**
  * Represents a command to exit the application.
- * Displays a goodbye message and terminates the program.
  */
 public class ExitCommand extends Command {
-    
+
     /**
-     * Executes the exit command by displaying a goodbye message
-     * and closing the UI.
+     * Executes the exit command by displaying a goodbye message and closing the UI.
      *
-     * @param tasks The task list (not used in this command).
-     * @param ui The UI to display the goodbye message and close.
-     * @param storage The storage (not used in this command).
+     * @param tasks   The task list containing all tasks.
+     * @param ui      The user interface for displaying messages.
+     * @param storage The storage handler for saving tasks.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
@@ -25,9 +23,9 @@ public class ExitCommand extends Command {
     }
 
     /**
-     * Indicates whether this command causes the application to exit.
+     * Indicates whether this command will exit the application.
      *
-     * @return true, as the exit command terminates the application.
+     * @return true, as this command exits the application.
      */
     @Override
     public boolean isExit() {

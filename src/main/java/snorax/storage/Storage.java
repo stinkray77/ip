@@ -33,7 +33,7 @@ public class Storage {
      * Skips corrupted lines and continues loading valid tasks.
      *
      * @return An ArrayList of tasks loaded from the file.
-     * @throws SnoraxException if there is an error reading the file.
+     * @throws SnoraxException If there is an error reading the file.
      */
     public ArrayList<Task> load() throws SnoraxException {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -73,12 +73,15 @@ public class Storage {
      * Supports parsing of Todo, Deadline, and Event tasks.
      *
      * @param line The line to parse.
-     * @return The Task object created from the line, or null if the line format is invalid.
-     * @throws SnoraxException if the line format is invalid.
+     * @return The Task object created from the line, or null if the line format is
+     *         invalid.
+     * @throws SnoraxException If the line format is invalid.
      */
     private Task parseTask(String line) throws SnoraxException {
         String[] parts = line.split(" \\| ");
-        if (parts.length < 3) return null;
+        if (parts.length < 3) {
+            return null;
+        }
 
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
@@ -90,11 +93,15 @@ public class Storage {
                 task = new Todo(description);
                 break;
             case "D":
-                if (parts.length < 4) return null;
+                if (parts.length < 4) {
+                    return null;
+                }
                 task = new Deadline(description, parts[3]);
                 break;
             case "E":
-                if (parts.length < 5) return null;
+                if (parts.length < 5) {
+                    return null;
+                }
                 task = new Event(description, parts[3], parts[4]);
                 break;
             default:
@@ -112,7 +119,7 @@ public class Storage {
      * Overwrites the existing file content.
      *
      * @param tasks The list of tasks to save.
-     * @throws SnoraxException if there is an error writing to the file.
+     * @throws SnoraxException If there is an error writing to the file.
      */
     public void save(ArrayList<Task> tasks) throws SnoraxException {
         try (FileWriter writer = new FileWriter(filePath)) {

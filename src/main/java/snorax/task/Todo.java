@@ -1,12 +1,12 @@
 package snorax.task;
 
 /**
- * Represents a todo task without any date/time constraints.
+ * Represents a todo task without any date/time attached to it.
  */
 public class Todo extends Task {
 
     /**
-     * Constructs a new Todo task with the specified description.
+     * Constructs a Todo task with the specified description.
      *
      * @param description The description of the todo task.
      */
@@ -21,6 +21,6 @@ public class Todo extends Task {
      */
     @Override
     public String toString() {
-        return "[" +  TaskType.TODO.getSymbol() + "]" + super.toString();
+        return "[" + TaskType.TODO.getSymbol() + "]" + super.toString();
     }
 }

@@ -15,7 +15,7 @@ public class Snorax {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
-    
+
     /**
      * Constructs a Snorax instance with the specified file path for task storage.
      * Initializes UI, storage, and attempts to load existing tasks from the file.
@@ -47,14 +47,15 @@ public class Snorax {
             try {
                 String input = ui.readCommand();
                 ui.showLine();
-                Command c = Parser.parse(input);
-                isExit = c.isExit();
+                Command command = Parser.parse(input);
+                command.execute(tasks, ui, storage);
+                isExit = command.isExit();
             } catch (Exception e) {
                 ui.showError("Sorry something went wrong I'm gg back to sleep");
             }
         }
     }
-     
+
     /**
      * Main entry point for the Snorax application.
      *
@@ -64,5 +65,3 @@ public class Snorax {
         new Snorax("./data/snorax.txt").run();
     }
 }
-
-       

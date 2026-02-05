@@ -1,15 +1,15 @@
 package snorax.exception;
 
 /**
- * Represents a custom exception specific to the Snorax application.
- * This exception is thrown when errors occur during task management operations.
+ * Represents an exception specific to the Snorax application.
+ * Used to signal errors that occur during Snorax operations.
  */
 public class SnoraxException extends Exception {
-    
+
     /**
-     * Constructs a SnoraxException with the specified error message.
+     * Constructs a new SnoraxException with the specified error message.
      *
-     * @param message The error message describing the exception.
+     * @param message The error message describing what went wrong.
      */
     public SnoraxException(String message) {
         super(message);

@@ -8,7 +8,6 @@ import snorax.ui.Ui;
 
 /**
  * Represents a command to unmark a task as not done.
- * The task at the specified index is marked as incomplete and the changes are saved to storage.
  */
 public class UnmarkCommand extends Command {
     private int index;
@@ -16,20 +15,19 @@ public class UnmarkCommand extends Command {
     /**
      * Constructs an UnmarkCommand with the specified task index.
      *
-     * @param index The index of the task to be marked as not done (0-based).
+     * @param index The index of the task to unmark (0-based).
      */
     public UnmarkCommand(int index) {
         this.index = index;
     }
 
     /**
-     * Executes the unmark command by marking the task at the specified index as not done,
-     * saving the updated list to storage, and displaying a confirmation message.
+     * Executes the unmark command by marking the specified task as not done.
      *
-     * @param tasks The task list containing the task to unmark.
-     * @param ui The UI to display messages.
-     * @param storage The storage to save tasks.
-     * @throws SnoraxException if the index is invalid or there is an error saving to storage.
+     * @param tasks   The task list containing all tasks.
+     * @param ui      The user interface for displaying messages.
+     * @param storage The storage handler for saving tasks.
+     * @throws SnoraxException If the task index is invalid.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
@@ -40,9 +38,9 @@ public class UnmarkCommand extends Command {
     }
 
     /**
-     * Indicates whether this command causes the application to exit.
+     * Indicates whether this command will exit the application.
      *
-     * @return false, as the unmark command does not terminate the application.
+     * @return false, as this command does not exit the application.
      */
     @Override
     public boolean isExit() {

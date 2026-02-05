@@ -5,17 +5,16 @@ import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
 
 /**
- * Represents a command to list all tasks in the task list.
- * Displays all tasks with their status and details to the user.
+ * Represents a command to list all tasks.
  */
 public class ListCommand extends Command {
-    
+
     /**
-     * Executes the list command by displaying all tasks in the task list.
+     * Executes the list command by displaying all tasks.
      *
-     * @param tasks The task list to display.
-     * @param ui The UI to display the task list.
-     * @param storage The storage (not used in this command).
+     * @param tasks   The task list containing all tasks.
+     * @param ui      The user interface for displaying messages.
+     * @param storage The storage handler for saving tasks.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
@@ -23,9 +22,9 @@ public class ListCommand extends Command {
     }
 
     /**
-     * Indicates whether this command causes the application to exit.
+     * Indicates whether this command will exit the application.
      *
-     * @return false, as the list command does not terminate the application.
+     * @return false, as this command does not exit the application.
      */
     @Override
     public boolean isExit() {

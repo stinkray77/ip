@@ -8,7 +8,6 @@ import snorax.ui.Ui;
 
 /**
  * Represents a command to mark a task as done.
- * The task at the specified index is marked as completed and the changes are saved to storage.
  */
 public class MarkCommand extends Command {
     private int index;
@@ -16,20 +15,19 @@ public class MarkCommand extends Command {
     /**
      * Constructs a MarkCommand with the specified task index.
      *
-     * @param index The index of the task to be marked as done (0-based).
+     * @param index The index of the task to mark (0-based).
      */
     public MarkCommand(int index) {
         this.index = index;
     }
 
     /**
-     * Executes the mark command by marking the task at the specified index as done,
-     * saving the updated list to storage, and displaying a confirmation message.
+     * Executes the mark command by marking the specified task as done.
      *
-     * @param tasks The task list containing the task to mark.
-     * @param ui The UI to display messages.
-     * @param storage The storage to save tasks.
-     * @throws SnoraxException if the index is invalid or there is an error saving to storage.
+     * @param tasks   The task list containing all tasks.
+     * @param ui      The user interface for displaying messages.
+     * @param storage The storage handler for saving tasks.
+     * @throws SnoraxException If the task index is invalid.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
@@ -40,9 +38,9 @@ public class MarkCommand extends Command {
     }
 
     /**
-     * Indicates whether this command causes the application to exit.
+     * Indicates whether this command will exit the application.
      *
-     * @return false, as the mark command does not terminate the application.
+     * @return false, as this command does not exit the application.
      */
     @Override
     public boolean isExit() {

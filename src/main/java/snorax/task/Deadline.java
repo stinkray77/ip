@@ -5,8 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
- * Represents a task with a deadline.
- * A deadline task has a description and a specific date/time by which it must be completed.
+ * Represents a deadline task with a specific due date and time.
+ * A deadline task must be completed by a certain date and time.
  */
 public class Deadline extends Task {
     protected LocalDateTime by;
@@ -14,11 +14,10 @@ public class Deadline extends Task {
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyy h:mma");
 
     /**
-     * Constructs a Deadline task with the specified description and deadline string.
-     * Parses the deadline string using the expected format (yyyy-MM-dd HHmm).
+     * Constructs a Deadline task with the specified description and deadline.
      *
      * @param description The description of the deadline task.
-     * @param by The deadline as a string (e.g., "2024-12-31 2359").
+     * @param by          The deadline as a string (format: yyyy-MM-dd HHmm).
      */
     public Deadline(String description, String by) {
         super(description);
@@ -33,7 +32,7 @@ public class Deadline extends Task {
      * Constructs a Deadline task with the specified description and deadline.
      *
      * @param description The description of the deadline task.
-     * @param by The deadline as a LocalDateTime object.
+     * @param by          The deadline as a LocalDateTime object.
      */
     public Deadline(String description, LocalDateTime by) {
         super(description);
@@ -43,7 +42,7 @@ public class Deadline extends Task {
     /**
      * Returns the deadline as a formatted string.
      *
-     * @return The deadline in the format "yyyy-MM-dd HHmm".
+     * @return The deadline in format yyyy-MM-dd HHmm.
      */
     public String getBy() {
         return by.format(INPUT_FORMAT);
@@ -52,16 +51,16 @@ public class Deadline extends Task {
     /**
      * Returns the deadline as a LocalDateTime object.
      *
-     * @return The deadline as LocalDateTime.
+     * @return The deadline.
      */
     public LocalDateTime getByDateTime() {
         return by;
     }
-    
+
     /**
      * Returns a string representation of the deadline task.
      *
-     * @return String with format "[D][status] description (by: formatted deadline)".
+     * @return String with format "[D][status] description (by: deadline)".
      */
     @Override
     public String toString() {

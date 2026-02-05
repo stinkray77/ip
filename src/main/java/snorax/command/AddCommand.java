@@ -8,7 +8,6 @@ import snorax.ui.Ui;
 
 /**
  * Represents a command to add a task to the task list.
- * The task is added to the list and saved to storage.
  */
 public class AddCommand extends Command {
     private Task task;
@@ -16,7 +15,7 @@ public class AddCommand extends Command {
     /**
      * Constructs an AddCommand with the specified task.
      *
-     * @param task The task to be added to the task list.
+     * @param task The task to be added.
      */
     public AddCommand(Task task) {
         this.task = task;
@@ -24,12 +23,12 @@ public class AddCommand extends Command {
 
     /**
      * Executes the add command by adding the task to the task list,
-     * saving the updated list to storage, and displaying a confirmation message.
+     * saving to storage, and displaying confirmation to the user.
      *
-     * @param tasks The task list to add the task to.
-     * @param ui The UI to display messages.
-     * @param storage The storage to save tasks.
-     * @throws SnoraxException if there is an error saving to storage.
+     * @param tasks   The task list to add the task to.
+     * @param ui      The UI to display messages.
+     * @param storage The storage to save the updated task list.
+     * @throws SnoraxException If there is an error saving to storage.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
@@ -39,9 +38,9 @@ public class AddCommand extends Command {
     }
 
     /**
-     * Indicates whether this command causes the application to exit.
+     * Indicates whether this command will cause the application to exit.
      *
-     * @return false, as the add command does not terminate the application.
+     * @return false, as this command does not exit the application.
      */
     @Override
     public boolean isExit() {

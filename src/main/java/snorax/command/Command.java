@@ -6,27 +6,25 @@ import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
 
 /**
- * Represents an executable command in the Snorax application.
- * This is an abstract class that all specific command types extend.
+ * Represents an abstract command that can be executed.
+ * All specific command types should extend this class.
  */
 public abstract class Command {
-    
+
     /**
-     * Executes the command with the given task list, UI, and storage.
+     * Executes the command.
      *
-     * @param tasks The task list to operate on.
-     * @param ui The UI to interact with the user.
-     * @param storage The storage to save or load tasks.
-     * @throws SnoraxException if there is an error during execution.
+     * @param tasks   The task list containing all tasks.
+     * @param ui      The user interface for displaying messages.
+     * @param storage The storage handler for saving tasks.
+     * @throws SnoraxException If an error occurs during execution.
      */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException;
 
     /**
-     * Indicates whether this command causes the application to exit.
+     * Indicates whether this command will exit the application.
      *
-     * @return true if the application should exit after this command, false otherwise.
+     * @return true if the command exits the application, false otherwise.
      */
     public abstract boolean isExit();
 }
-
-

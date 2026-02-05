@@ -2,14 +2,14 @@ package snorax.task;
 
 /**
  * Represents a task with a description and completion status.
- * This is the base class for all task types.
+ * This is the base class for all task types in the Snorax application.
  */
 public class Task {
     protected String description;
     protected boolean isDone;
 
     /**
-     * Constructs a new Task with the specified description.
+     * Constructs a Task with the specified description.
      * The task is initially marked as not done.
      *
      * @param description The description of the task.
@@ -27,7 +27,7 @@ public class Task {
     public boolean isDone() {
         return isDone;
     }
-    
+
     /**
      * Returns the status icon of the task.
      *
