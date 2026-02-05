@@ -34,7 +34,7 @@ public class AddCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
         tasks.addTask(task);
         storage.save(tasks.getTasks());
-        ui.showTaskAdded(task.toString(), tasks.size());
+        ui.showTaskAdded(task, tasks.size());
     }
 
     /**
