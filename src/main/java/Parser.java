@@ -1,6 +1,52 @@
+import commands.AddCommand;
+import commands.DeleteCommand;
+import commands.ExitCommand;
+import commands.ListCommand;
+import commands.MarkCommand;
+import commands.UnmarkCommand;
+
+import commands.Command;
+
 public class Parser {
-    public static Command parseCommand (String input) {
-        return Command.parse(input);
+    public static Command parse(String input) throws SnoraxException {
+        if (input == null || input.trim().isEmpty()) {
+            throw new SnoraxException("idk what that means, goodnight");
+        }
+        
+        String[] parts = input.split(" ", 2);
+        String commandWord = parts[0].toLowerCase();
+        
+        switch (commandWord) {
+            case "bye":
+                return new ExitCommand();
+                
+            case "list":
+                return new ListCommand();
+                
+            case "mark":
+                return new MarkCommand(parseTaskIndex(input));
+                
+            case "unmark":
+                return new UnmarkCommand(parseTaskIndex(input));
+                
+            case "delete":
+                return new DeleteCommand(parseTaskIndex(input));
+                
+            case "todo":
+                String description = parseTodoDescription(input);
+                return new AddCommand(new Todo(description));
+                
+            case "deadline":
+                String[] deadlineParts = parseDeadline(input);
+                return new AddCommand(new Deadline(deadlineParts[0], deadlineParts[1]));
+                
+            case "event":
+                String[] eventParts = parseEvent(input);
+                return new AddCommand(new Event(eventParts[0], eventParts[1], eventParts[2]));
+                
+            default:
+                throw new SnoraxException("idk what that means, goodnight");
+        }
     }
 
     public static int parseTaskIndex(String input) throws SnoraxException {
