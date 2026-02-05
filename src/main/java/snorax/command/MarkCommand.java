@@ -1,10 +1,10 @@
-package commands;
+package snorax.command;
 
-import Storage;
-import TaskList;
-import Ui;
-import Task;
-import SnoraxException;
+import snorax.exception.SnoraxException;
+import snorax.storage.Storage;
+import snorax.task.Task;
+import snorax.tasklist.TaskList;
+import snorax.ui.Ui;
 
 public class MarkCommand extends Command {
     private int index;
