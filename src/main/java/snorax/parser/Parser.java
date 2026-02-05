@@ -4,6 +4,7 @@ import snorax.command.AddCommand;
 import snorax.command.Command;
 import snorax.command.DeleteCommand;
 import snorax.command.ExitCommand;
+import snorax.command.FindCommand;
 import snorax.command.ListCommand;
 import snorax.command.MarkCommand;
 import snorax.command.UnmarkCommand;
@@ -14,7 +15,6 @@ import snorax.task.Todo;
 
 /**
  * Parses user input and converts it into executable commands.
- * Handles parsing of various command types and their arguments.
  */
 public class Parser {
 
@@ -49,6 +49,9 @@ public class Parser {
             case "delete":
                 return new DeleteCommand(parseTaskIndex(input));
 
+            case "find":
+                return new FindCommand(parseFindKeyword(input));
+
             case "todo":
                 String description = parseTodoDescription(input);
                 return new AddCommand(new Todo(description));
@@ -80,10 +83,25 @@ public class Parser {
             throw new SnoraxException("give valid index");
         }
         try {
-            return Integer.parseInt(parts[1]) - 1; // Convert to 0-index
+            return Integer.parseInt(parts[1]) - 1;
         } catch (NumberFormatException e) {
             throw new SnoraxException("give valid index");
         }
+    }
+
+    /**
+     * Parses the keyword from a find command.
+     *
+     * @param input The command string.
+     * @return The keyword to search for.
+     * @throws SnoraxException If the keyword is empty.
+     */
+    public static String parseFindKeyword(String input) throws SnoraxException {
+        String keyword = input.substring(5).trim();
+        if (keyword.isEmpty()) {
+            throw new SnoraxException("cannot be empty bro");
+        }
+        return keyword;
     }
 
     /**
