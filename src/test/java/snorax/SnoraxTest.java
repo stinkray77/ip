@@ -7,6 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 
@@ -16,7 +17,7 @@ public class SnoraxTest {
     
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
-    private final ByteArrayInputStream originalIn = System.in;
+    private final InputStream originalIn = System.in;
 
     @BeforeEach
     public void setUpStreams() {

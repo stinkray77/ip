@@ -10,10 +10,8 @@ import snorax.task.Event;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +63,7 @@ public class StorageTest {
         Storage storage = new Storage(filePath);
         
         ArrayList<Task> tasks = new ArrayList<>();
-        Deadline deadline = new Deadline("Submit report", "2024-12-31");
+        Deadline deadline = new Deadline("Submit report", "2024-12-31 2359");
         tasks.add(deadline);
         
         storage.save(tasks);
@@ -81,7 +79,7 @@ public class StorageTest {
         Storage storage = new Storage(filePath);
         
         ArrayList<Task> tasks = new ArrayList<>();
-        Event event = new Event("Conference", "2024-12-25", "2024-12-26");
+        Event event = new Event("Conference", "2024-12-25 0900", "2024-12-26 1700");
         tasks.add(event);
         
         storage.save(tasks);
@@ -98,8 +96,8 @@ public class StorageTest {
         
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new Todo("Task 1"));
-        tasks.add(new Deadline("Task 2", "2024-12-31"));
-        tasks.add(new Event("Task 3", "2024-12-25", "2024-12-26"));
+        tasks.add(new Deadline("Task 2", "2024-12-31 2359"));
+        tasks.add(new Event("Task 3", "2024-12-25 0900", "2024-12-26 1700"));
         
         storage.save(tasks);
         ArrayList<Task> loadedTasks = storage.load();
@@ -114,7 +112,7 @@ public class StorageTest {
         
         ArrayList<Task> tasks = new ArrayList<>();
         Todo todo = new Todo("Completed task");
-        todo.mark();
+        todo.markAsDone();
         tasks.add(todo);
         
         storage.save(tasks);

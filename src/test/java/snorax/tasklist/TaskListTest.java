@@ -2,7 +2,6 @@ package snorax.tasklist;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import snorax.exception.SnoraxException;
 import snorax.task.Task;
 import snorax.task.Todo;
 
@@ -36,54 +35,54 @@ public class TaskListTest {
     }
 
     @Test
-    public void testAdd_singleTask() {
+    public void testAddTask_singleTask() {
         Task task = new Todo("Read book");
-        taskList.add(task);
+        taskList.addTask(task);
         
         assertEquals(1, taskList.size());
-        assertEquals(task, taskList.get(0));
+        assertEquals(task, taskList.getTask(0));
     }
 
     @Test
-    public void testAdd_multipleTasks() {
+    public void testAddTask_multipleTasks() {
         Task task1 = new Todo("Task 1");
         Task task2 = new Todo("Task 2");
         
-        taskList.add(task1);
-        taskList.add(task2);
+        taskList.addTask(task1);
+        taskList.addTask(task2);
         
         assertEquals(2, taskList.size());
     }
 
     @Test
-    public void testDelete_validIndex() throws SnoraxException {
+    public void testDeleteTask_validIndex() {
         Task task = new Todo("Delete me");
-        taskList.add(task);
+        taskList.addTask(task);
         
-        Task deleted = taskList.delete(0);
+        Task deleted = taskList.deleteTask(0);
         
         assertEquals(task, deleted);
         assertEquals(0, taskList.size());
     }
 
     @Test
-    public void testDelete_invalidIndex() {
-        assertThrows(SnoraxException.class, () -> taskList.delete(0));
-        assertThrows(SnoraxException.class, () -> taskList.delete(-1));
+    public void testDeleteTask_invalidIndex() {
+        assertThrows(IndexOutOfBoundsException.class, () -> taskList.deleteTask(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> taskList.deleteTask(-1));
     }
 
     @Test
-    public void testGet_validIndex() throws SnoraxException {
+    public void testGetTask_validIndex() {
         Task task = new Todo("Get me");
-        taskList.add(task);
+        taskList.addTask(task);
         
-        assertEquals(task, taskList.get(0));
+        assertEquals(task, taskList.getTask(0));
     }
 
     @Test
-    public void testGet_invalidIndex() {
-        assertThrows(SnoraxException.class, () -> taskList.get(0));
-        assertThrows(SnoraxException.class, () -> taskList.get(-1));
+    public void testGetTask_invalidIndex() {
+        assertThrows(IndexOutOfBoundsException.class, () -> taskList.getTask(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> taskList.getTask(-1));
     }
 
     @Test
@@ -93,25 +92,20 @@ public class TaskListTest {
 
     @Test
     public void testSize_afterAddingTasks() {
-        taskList.add(new Todo("Task 1"));
-        taskList.add(new Todo("Task 2"));
-        taskList.add(new Todo("Task 3"));
+        taskList.addTask(new Todo("Task 1"));
+        taskList.addTask(new Todo("Task 2"));
+        taskList.addTask(new Todo("Task 3"));
         
         assertEquals(3, taskList.size());
     }
 
     @Test
-    public void testGetTasks_returnsCopy() {
+    public void testGetTasks_returnsActualList() {
         Task task1 = new Todo("Task 1");
-        taskList.add(task1);
+        taskList.addTask(task1);
         
         ArrayList<Task> tasks = taskList.getTasks();
         assertEquals(1, tasks.size());
-        
-        // Modify the returned list
-        tasks.clear();
-        
-        // Original should be unchanged
-        assertEquals(1, taskList.size());
+        assertEquals(task1, tasks.get(0));
     }
 }

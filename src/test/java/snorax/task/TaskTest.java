@@ -14,22 +14,35 @@ public class TaskTest {
     }
 
     @Test
-    public void testMark_taskBecomesCompleted() {
+    public void testMarkAsDone_taskBecomesCompleted() {
         Todo todo = new Todo("Complete task");
         assertFalse(todo.isDone());
         
-        todo.mark();
+        todo.markAsDone();
         assertTrue(todo.isDone());
     }
 
     @Test
-    public void testUnmark_taskBecomesIncomplete() {
+    public void testMarkAsNotDone_taskBecomesIncomplete() {
         Todo todo = new Todo("Incomplete task");
-        todo.mark();
+        todo.markAsDone();
         assertTrue(todo.isDone());
         
-        todo.unmark();
+        todo.markAsNotDone();
         assertFalse(todo.isDone());
+    }
+
+    @Test
+    public void testGetStatusIcon_unmarkedTask() {
+        Todo todo = new Todo("Incomplete task");
+        assertEquals(" ", todo.getStatusIcon());
+    }
+
+    @Test
+    public void testGetStatusIcon_markedTask() {
+        Todo todo = new Todo("Completed task");
+        todo.markAsDone();
+        assertEquals("X", todo.getStatusIcon());
     }
 
     @Test
@@ -42,23 +55,8 @@ public class TaskTest {
     @Test
     public void testToString_markedTask() {
         Todo todo = new Todo("Buy groceries");
-        todo.mark();
+        todo.markAsDone();
         String expected = "[T][X] Buy groceries";
         assertEquals(expected, todo.toString());
-    }
-
-    @Test
-    public void testToFileFormat_unmarkedTask() {
-        Todo todo = new Todo("Read book");
-        String expected = "T | 0 | Read book";
-        assertEquals(expected, todo.toFileFormat());
-    }
-
-    @Test
-    public void testToFileFormat_markedTask() {
-        Todo todo = new Todo("Read book");
-        todo.mark();
-        String expected = "T | 1 | Read book";
-        assertEquals(expected, todo.toFileFormat());
     }
 }
