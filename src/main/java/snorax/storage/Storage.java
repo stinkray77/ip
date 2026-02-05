@@ -11,13 +11,30 @@ import snorax.task.Event;
 import snorax.task.Task;
 import snorax.task.Todo;
 
+/**
+ * Handles loading and saving of tasks to a file.
+ * Manages file I/O operations for persistent task storage.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Constructs a Storage instance with the specified file path.
+     *
+     * @param filePath The path to the file for storing tasks.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the file.
+     * Creates the file if it does not exist.
+     * Skips corrupted lines and continues loading valid tasks.
+     *
+     * @return An ArrayList of tasks loaded from the file.
+     * @throws SnoraxException If there is an error reading the file.
+     */
     public ArrayList<Task> load() throws SnoraxException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -51,9 +68,20 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Parses a line from the file and converts it to a Task object.
+     * Supports parsing of Todo, Deadline, and Event tasks.
+     *
+     * @param line The line to parse.
+     * @return The Task object created from the line, or null if the line format is
+     *         invalid.
+     * @throws SnoraxException If the line format is invalid.
+     */
     private Task parseTask(String line) throws SnoraxException {
         String[] parts = line.split(" \\| ");
-        if (parts.length < 3) return null;
+        if (parts.length < 3) {
+            return null;
+        }
 
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
@@ -65,11 +93,15 @@ public class Storage {
                 task = new Todo(description);
                 break;
             case "D":
-                if (parts.length < 4) return null;
+                if (parts.length < 4) {
+                    return null;
+                }
                 task = new Deadline(description, parts[3]);
                 break;
             case "E":
-                if (parts.length < 5) return null;
+                if (parts.length < 5) {
+                    return null;
+                }
                 task = new Event(description, parts[3], parts[4]);
                 break;
             default:
@@ -82,6 +114,13 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Saves the list of tasks to the file.
+     * Overwrites the existing file content.
+     *
+     * @param tasks The list of tasks to save.
+     * @throws SnoraxException If there is an error writing to the file.
+     */
     public void save(ArrayList<Task> tasks) throws SnoraxException {
         try (FileWriter writer = new FileWriter(filePath)) {
             for (Task task : tasks) {
@@ -92,6 +131,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Formats a task for storage in the file.
+     * Converts the task to a pipe-separated string format.
+     *
+     * @param task The task to format.
+     * @return The formatted string representation of the task.
+     */
     private String formatTask(Task task) {
         String type;
         String extraInfo = "";
