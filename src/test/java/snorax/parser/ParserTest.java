@@ -1,7 +1,14 @@
 package snorax.parser;
 
 import org.junit.jupiter.api.Test;
-import snorax.command.*;
+import snorax.command.AddCommand;
+import snorax.command.Command;
+import snorax.command.DeleteCommand;
+import snorax.command.ExitCommand;
+import snorax.command.FindCommand;
+import snorax.command.ListCommand;
+import snorax.command.MarkCommand;
+import snorax.command.UnmarkCommand;
 import snorax.exception.SnoraxException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,6 +75,14 @@ public class ParserTest {
     }
 
     @Test
+    public void testParse_findCommand() throws SnoraxException {
+        Command command = Parser.parse("find book");
+        assertNotNull(command);
+        assertTrue(command instanceof FindCommand);
+        assertFalse(command.isExit());
+    }
+
+    @Test
     public void testParse_emptyInput() {
         assertThrows(SnoraxException.class, () -> Parser.parse(""));
     }
@@ -90,5 +105,10 @@ public class ParserTest {
     @Test
     public void testParse_eventWithoutDescription() {
         assertThrows(Exception.class, () -> Parser.parse("event"));
+    }
+
+    @Test
+    public void testParse_findWithoutKeyword() {
+        assertThrows(Exception.class, () -> Parser.parse("find"));
     }
 }
