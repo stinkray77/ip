@@ -30,11 +30,12 @@ public class MarkCommand extends Command {
      * @throws SnoraxException If the task index is invalid.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
         Task task = tasks.getTask(index);
         task.markAsDone();
         storage.save(tasks.getTasks());
         ui.showTaskMarked(task);
+        return "good job, marked as done:\n  " + task;
     }
 
     /**

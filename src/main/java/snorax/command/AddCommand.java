@@ -31,10 +31,14 @@ public class AddCommand extends Command {
      * @throws SnoraxException If there is an error saving to storage.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
         tasks.addTask(task);
         storage.save(tasks.getTasks());
         ui.showTaskAdded(task, tasks.size());
+        return "ok added this task liao: \n "
+                + task + "\nNow you have "
+                + tasks.size()
+                + " tasks in the list.";
     }
 
     /**
