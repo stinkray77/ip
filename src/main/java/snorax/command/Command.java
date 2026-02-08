@@ -19,7 +19,7 @@ public abstract class Command {
      * @param storage The storage handler for saving tasks.
      * @throws SnoraxException If an error occurs during execution.
      */
-    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException;
+    public abstract String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException;
 
     /**
      * Indicates whether this command will exit the application.

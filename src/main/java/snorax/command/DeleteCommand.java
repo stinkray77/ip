@@ -30,10 +30,16 @@ public class DeleteCommand extends Command {
      * @throws SnoraxException If the task index is invalid.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
         Task removedTask = tasks.deleteTask(index);
         storage.save(tasks.getTasks());
         ui.showTaskDeleted(removedTask, tasks.size());
+        return "done bro removed task:\n  "
+                + removedTask
+                + "\nNow you have "
+                + tasks.size()
+                + " tasks in the list.";
+
     }
 
     /**

@@ -30,11 +30,12 @@ public class UnmarkCommand extends Command {
      * @throws SnoraxException If the task index is invalid.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
         Task task = tasks.getTask(index);
         task.markAsNotDone();
         storage.save(tasks.getTasks());
         ui.showTaskUnmarked(task);
+        return "ok marked as undone u lazy:\n  " + task;
     }
 
     /**
