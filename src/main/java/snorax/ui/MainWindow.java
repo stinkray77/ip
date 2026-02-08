@@ -21,7 +21,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
-    private Snorax duke;
+    private Snorax snorax;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/snorax.png"));
     private Image pigImage = new Image(this.getClass().getResourceAsStream("/images/pig.png"));

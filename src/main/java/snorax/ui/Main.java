@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private Snorax snorax = new Snorax();
+    private Snorax snorax = new Snorax("./data/snorax.txt");
 
     @Override
     public void start(Stage stage) {

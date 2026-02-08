@@ -54,7 +54,7 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-    public static DialogBox getPigDialog(String text, Image img) {
+    public static DialogBox getSnoraxDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
         return db;
