@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
 
 /**
  * Controller for the main GUI.
@@ -46,9 +47,18 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         String response = snorax.getResponse(input);
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getSnoraxDialog(response, pigImage));
+        addDialogBoxes(
+            DialogBox.getUserDialog(input, userImage);
+            DialogBox.getSnoraxDialog(response, pigImage));
         userInput.clear();
+    }
+
+    /**
+     * Adds dialog boxes to the dialog container using varargs.
+     *
+     * @param dialogBoxes The dialog boxes to add.
+     */
+    private void addDialogBoxes(Node... dialogBoxes) {
+        dialogContainer.getChildren().addAll(dialogBoxes);
     }
 }
