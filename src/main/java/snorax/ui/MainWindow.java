@@ -1,6 +1,7 @@
 package snorax.ui;
 
 import snorax.Snorax;
+import snorax.ui.DialogBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -48,8 +49,8 @@ public class MainWindow extends AnchorPane {
         String input = userInput.getText();
         String response = snorax.getResponse(input);
         addDialogBoxes(
-            DialogBox.getUserDialog(input, userImage)
-            DialogBox.getSnoraxDialog(response, pigImage));
+                DialogBox.getUserDialog(input, userImage),
+                DialogBox.getSnoraxDialog(response, pigImage));
         userInput.clear();
     }
 
