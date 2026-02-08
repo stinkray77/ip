@@ -16,6 +16,15 @@ public class Snorax {
     private TaskList tasks;
     private Ui ui;
 
+    public String getResponse(String input) {
+        try {
+            Command command = Parser.parse(input);
+            return command.execute(tasks, ui, storage);
+        } catch (Exception e) {
+            return "Sorry something went wrong im gg back to sleep";
+        }
+    }
+
     /**
      * Constructs a Snorax instance with the specified file path for task storage.
      * Initializes UI, storage, and attempts to load existing tasks from the file.

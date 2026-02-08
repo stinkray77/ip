@@ -1,6 +1,6 @@
 package snorax.ui;
 
-import snorax;
+import snorax.Snorax;
 import java.io.IOException;
 
 import javafx.application.Application;
