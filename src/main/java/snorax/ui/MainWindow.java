@@ -48,7 +48,7 @@ public class MainWindow extends AnchorPane {
         String input = userInput.getText();
         String response = snorax.getResponse(input);
         addDialogBoxes(
-            DialogBox.getUserDialog(input, userImage);
+            DialogBox.getUserDialog(input, userImage)
             DialogBox.getSnoraxDialog(response, pigImage));
         userInput.clear();
     }
