@@ -8,6 +8,7 @@ import snorax.task.Task;
  * Provides operations to add, delete, and retrieve tasks.
  */
 public class TaskList {
+    private static final int FIRST_TASK_INDEX = 0;
     private ArrayList<Task> tasks;
 
     /**
@@ -15,6 +16,7 @@ public class TaskList {
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
+        assert tasks != null : "Tasks list should be initialized";
     }
 
     /**
@@ -23,6 +25,7 @@ public class TaskList {
      * @param tasks The initial list of tasks.
      */
     public TaskList(ArrayList<Task> tasks) {
+        assert tasks != null : "Initial tasks list cannot be null";
         this.tasks = tasks;
     }
 
@@ -32,7 +35,10 @@ public class TaskList {
      * @param task The task to be added.
      */
     public void addTask(Task task) {
+        assert task != null : "Cannot add null task";
+        int sizeBefore = tasks.size();
         tasks.add(task);
+        assert tasks.size() == sizeBefore + 1 : "Task should be added to list";
     }
 
     /**
@@ -42,17 +48,27 @@ public class TaskList {
      * @return The deleted task.
      */
     public Task deleteTask(int index) {
-        return tasks.remove(index);
+        assert index >= FIRST_TASK_INDEX && index < tasks.size()
+                : "Index must be within valid range";
+        int sizeBefore = tasks.size();
+        Task removed = tasks.remove(index);
+        assert tasks.size() == sizeBefore - 1 : "Task should be removed from list";
+        assert removed != null : "Removed task should not be null";
+        return removed;
     }
 
     /**
-     * Retrieves a task at the specified index.
+     * Gets a task at the specified index.
      *
-     * @param index The index of the task to retrieve.
+     * @param index The index of the task.
      * @return The task at the specified index.
      */
     public Task getTask(int index) {
-        return tasks.get(index);
+        assert index >= FIRST_TASK_INDEX && index < tasks.size()
+                : "Index must be within valid range";
+        Task task = tasks.get(index);
+        assert task != null : "Retrieved task should not be null";
+        return task;
     }
 
     /**
@@ -65,11 +81,20 @@ public class TaskList {
     }
 
     /**
-     * Returns the internal list of tasks.
+     * Returns the internal task list.
      *
-     * @return The ArrayList containing all tasks.
+     * @return The ArrayList of tasks.
      */
     public ArrayList<Task> getTasks() {
         return tasks;
+    }
+
+    /**
+     * Checks if the task list is empty.
+     *
+     * @return true if the list is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return tasks.isEmpty();
     }
 }
