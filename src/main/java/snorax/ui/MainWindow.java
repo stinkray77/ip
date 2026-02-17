@@ -45,11 +45,22 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert snorax != null : "Snorax must be set before handling user input";
+        assert userInput != null : "UserInput field should be initialized";
+        assert dialogContainer != null : "DialogContainer should be initialized";
+
         String input = userInput.getText();
         String response = snorax.getResponse(input);
+
+        assert response != null : "Response from Snorax should not be null";
+
+        int childrenBefore = dialogContainer.getChildren().size();
         addDialogBoxes(
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getSnoraxDialog(response, pigImage));
+
+        assert dialogContainer.getChildren().size() == childrenBefore + 2
+                : "Should add exactly 2 dialog boxes";
         userInput.clear();
     }
 
