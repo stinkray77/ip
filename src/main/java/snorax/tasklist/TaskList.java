@@ -85,4 +85,13 @@ public class TaskList {
     public ArrayList<Task> getTasks() {
         return tasks;
     }
+
+    /**
+     * Checks if task is empty.
+     * 
+     * @return boolean
+     */
+    public boolean isEmpty() {
+        return this.tasks.size() == 0;
+    }
 }
