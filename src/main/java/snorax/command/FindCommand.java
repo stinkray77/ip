@@ -6,11 +6,15 @@ import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Represents a command to find tasks containing a specific keyword.
  */
 public class FindCommand extends Command {
+    private static final int TASK_NUMBER_OFFSET = 1;
+
     private String keyword;
 
     /**
@@ -32,26 +36,22 @@ public class FindCommand extends Command {
      */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.getTask(i);
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
-                matchingTasks.add(task);
-            }
-        }
+        ArrayList<Task> matchingTasks = tasks.getTasks().stream()
+                .filter(task -> task.getDescription().toLowerCase()
+                        .contains(keyword.toLowerCase()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         if (matchingTasks.isEmpty()) {
             return "No matching tasks found bro";
         }
 
-        StringBuilder result = new StringBuilder("Here are the matching tasks in your list:\n");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            result.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
-        }
-        ui.showFoundTasks(matchingTasks);
-        return result.toString().trim();
+        String result = IntStream.range(0, matchingTasks.size())
+                .mapToObj(i -> (i + TASK_NUMBER_OFFSET) + ". " + matchingTasks.get(i))
+                .collect(Collectors.joining("\n",
+                        "Here are the matching tasks in your list:\n", ""));
 
+        ui.showFoundTasks(matchingTasks);
+        return result.trim();
     }
 
     /**
