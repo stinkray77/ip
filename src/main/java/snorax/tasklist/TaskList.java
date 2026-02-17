@@ -8,6 +8,7 @@ import snorax.task.Task;
  * Provides operations to add, delete, and retrieve tasks.
  */
 public class TaskList {
+    private static final int FIRST_TASK_INDEX = 0;
     private ArrayList<Task> tasks;
 
     /**
@@ -47,7 +48,8 @@ public class TaskList {
      * @return The deleted task.
      */
     public Task deleteTask(int index) {
-        assert index >= 0 && index < tasks.size() : "Index must be within valid range";
+        assert index >= FIRST_TASK_INDEX && index < tasks.size()
+                : "Index must be within valid range";
         int sizeBefore = tasks.size();
         Task removed = tasks.remove(index);
         assert tasks.size() == sizeBefore - 1 : "Task should be removed from list";
@@ -56,13 +58,14 @@ public class TaskList {
     }
 
     /**
-     * Retrieves a task at the specified index.
+     * Gets a task at the specified index.
      *
-     * @param index The index of the task to retrieve.
+     * @param index The index of the task.
      * @return The task at the specified index.
      */
     public Task getTask(int index) {
-        assert index >= 0 && index < tasks.size() : "Index must be within valid range";
+        assert index >= FIRST_TASK_INDEX && index < tasks.size()
+                : "Index must be within valid range";
         Task task = tasks.get(index);
         assert task != null : "Retrieved task should not be null";
         return task;
@@ -78,20 +81,20 @@ public class TaskList {
     }
 
     /**
-     * Returns the internal list of tasks.
+     * Returns the internal task list.
      *
-     * @return The ArrayList containing all tasks.
+     * @return The ArrayList of tasks.
      */
     public ArrayList<Task> getTasks() {
         return tasks;
     }
 
     /**
-     * Checks if task is empty.
-     * 
-     * @return boolean
+     * Checks if the task list is empty.
+     *
+     * @return true if the list is empty, false otherwise.
      */
     public boolean isEmpty() {
-        return this.tasks.size() == 0;
+        return tasks.isEmpty();
     }
 }

@@ -17,6 +17,21 @@ import snorax.task.Todo;
  * Parses user input and converts it into executable commands.
  */
 public class Parser {
+    private static final String COMMAND_BYE = "bye";
+    private static final String COMMAND_LIST = "list";
+    private static final String COMMAND_MARK = "mark";
+    private static final String COMMAND_UNMARK = "unmark";
+    private static final String COMMAND_DELETE = "delete";
+    private static final String COMMAND_TODO = "todo";
+    private static final String COMMAND_DEADLINE = "deadline";
+    private static final String COMMAND_EVENT = "event";
+    private static final String COMMAND_FIND = "find";
+
+    private static final String DELIMITER_BY = "/by";
+    private static final String DELIMITER_FROM = "/from";
+    private static final String DELIMITER_TO = "/to";
+
+    private static final int TASK_INDEX_OFFSET = 1;
 
     /**
      * Parses the user input string and returns the corresponding command.
@@ -26,129 +41,155 @@ public class Parser {
      * @throws SnoraxException If the input is invalid or cannot be parsed.
      */
     public static Command parse(String input) throws SnoraxException {
-        if (input == null || input.trim().isEmpty()) {
-            throw new SnoraxException("idk what that means, goodnight");
+        assert input != null : "Input cannot be null";
+
+        String trimmedInput = input.trim();
+        if (trimmedInput.isEmpty()) {
+            throw new SnoraxException("Please enter a command!");
         }
 
-        String[] parts = input.split(" ", 2);
+        String[] parts = trimmedInput.split(" ", 2);
         String commandWord = parts[0].toLowerCase();
 
         switch (commandWord) {
-            case "bye":
-                return new ExitCommand();
-
-            case "list":
-                return new ListCommand();
-
-            case "mark":
-                return new MarkCommand(parseTaskIndex(input));
-
-            case "unmark":
-                return new UnmarkCommand(parseTaskIndex(input));
-
-            case "delete":
-                return new DeleteCommand(parseTaskIndex(input));
-
-            case "find":
-                return new FindCommand(parseFindKeyword(input));
-
-            case "todo":
-                String description = parseTodoDescription(input);
-                return new AddCommand(new Todo(description));
-
-            case "deadline":
-                String[] deadlineParts = parseDeadline(input);
-                return new AddCommand(new Deadline(deadlineParts[0], deadlineParts[1]));
-
-            case "event":
-                String[] eventParts = parseEvent(input);
-                return new AddCommand(new Event(eventParts[0], eventParts[1], eventParts[2]));
-
+            case COMMAND_BYE:
+                return parseExitCommand();
+            case COMMAND_LIST:
+                return parseListCommand();
+            case COMMAND_MARK:
+                return parseMarkCommand(parts);
+            case COMMAND_UNMARK:
+                return parseUnmarkCommand(parts);
+            case COMMAND_DELETE:
+                return parseDeleteCommand(parts);
+            case COMMAND_TODO:
+                return parseTodoCommand(parts);
+            case COMMAND_DEADLINE:
+                return parseDeadlineCommand(parts);
+            case COMMAND_EVENT:
+                return parseEventCommand(parts);
+            case COMMAND_FIND:
+                return parseFindCommand(parts);
             default:
-                throw new SnoraxException("idk what that means, goodnight");
+                throw new SnoraxException("I don't understand that command!");
         }
     }
 
-    /**
-     * Parses the task index from a command string.
-     *
-     * @param input The command string containing the task index.
-     * @return The task index (0-based).
-     * @throws SnoraxException If the index is missing or invalid.
-     */
-    public static int parseTaskIndex(String input) throws SnoraxException {
-        String[] parts = input.split(" ");
+    private static Command parseExitCommand() {
+        return new ExitCommand();
+    }
 
+    private static Command parseListCommand() {
+        return new ListCommand();
+    }
+
+    private static Command parseMarkCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "mark");
+        int taskIndex = parseTaskIndex(parts[1]);
+        return new MarkCommand(taskIndex);
+    }
+
+    private static Command parseUnmarkCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "unmark");
+        int taskIndex = parseTaskIndex(parts[1]);
+        return new UnmarkCommand(taskIndex);
+    }
+
+    private static Command parseDeleteCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "delete");
+        int taskIndex = parseTaskIndex(parts[1]);
+        return new DeleteCommand(taskIndex);
+    }
+
+    private static Command parseTodoCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "todo");
+        String description = parts[1].trim();
+        validateNotEmpty(description, "The description of a todo cannot be empty.");
+        return new AddCommand(new Todo(description));
+    }
+
+    private static Command parseDeadlineCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "deadline");
+
+        String[] deadlineParts = parts[1].split(DELIMITER_BY, 2);
+        validateDeadlineFormat(deadlineParts);
+
+        String description = deadlineParts[0].trim();
+        String by = deadlineParts[1].trim();
+
+        validateNotEmpty(description, "The description of a deadline cannot be empty.");
+        validateNotEmpty(by, "The deadline time cannot be empty.");
+
+        return new AddCommand(new Deadline(description, by));
+    }
+
+    private static Command parseEventCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "event");
+
+        String[] eventParts = parts[1].split(DELIMITER_FROM, 2);
+        validateEventHasFrom(eventParts);
+
+        String description = eventParts[0].trim();
+        String[] timeParts = eventParts[1].split(DELIMITER_TO, 2);
+        validateEventHasTo(timeParts);
+
+        String from = timeParts[0].trim();
+        String to = timeParts[1].trim();
+
+        validateNotEmpty(description, "The description of an event cannot be empty.");
+        validateNotEmpty(from, "The start time cannot be empty.");
+        validateNotEmpty(to, "The end time cannot be empty.");
+
+        return new AddCommand(new Event(description, from, to));
+    }
+
+    private static Command parseFindCommand(String[] parts) throws SnoraxException {
+        validateCommandHasArgument(parts, "find");
+        String keyword = parts[1].trim();
+        validateNotEmpty(keyword, "The search keyword cannot be empty.");
+        return new FindCommand(keyword);
+    }
+
+    private static void validateCommandHasArgument(String[] parts, String commandName)
+            throws SnoraxException {
         if (parts.length < 2) {
-            throw new SnoraxException("give valid index");
+            throw new SnoraxException("The " + commandName + " command requires an argument!");
         }
+    }
+
+    private static void validateNotEmpty(String value, String errorMessage) throws SnoraxException {
+        if (value.isEmpty()) {
+            throw new SnoraxException(errorMessage);
+        }
+    }
+
+    private static void validateDeadlineFormat(String[] parts) throws SnoraxException {
+        if (parts.length < 2) {
+            throw new SnoraxException("Please use format: deadline <description> /by <time>");
+        }
+    }
+
+    private static void validateEventHasFrom(String[] parts) throws SnoraxException {
+        if (parts.length < 2) {
+            throw new SnoraxException("Please use format: event <description> /from <start> /to <end>");
+        }
+    }
+
+    private static void validateEventHasTo(String[] parts) throws SnoraxException {
+        if (parts.length < 2) {
+            throw new SnoraxException("Please use format: event <description> /from <start> /to <end>");
+        }
+    }
+
+    private static int parseTaskIndex(String indexString) throws SnoraxException {
         try {
-            return Integer.parseInt(parts[1]) - 1;
+            int index = Integer.parseInt(indexString.trim()) - TASK_INDEX_OFFSET;
+            if (index < 0) {
+                throw new SnoraxException("Task number must be positive!");
+            }
+            return index;
         } catch (NumberFormatException e) {
-            throw new SnoraxException("give valid index");
+            throw new SnoraxException("Please provide a valid task number!");
         }
-    }
-
-    /**
-     * Parses the keyword from a find command.
-     *
-     * @param input The command string.
-     * @return The keyword to search for.
-     * @throws SnoraxException If the keyword is empty.
-     */
-    public static String parseFindKeyword(String input) throws SnoraxException {
-        String keyword = input.substring(5).trim();
-        if (keyword.isEmpty()) {
-            throw new SnoraxException("cannot be empty bro");
-        }
-        return keyword;
-    }
-
-    /**
-     * Parses the description from a todo command.
-     *
-     * @param input The todo command string.
-     * @return The task description.
-     * @throws SnoraxException If the description is empty.
-     */
-    public static String parseTodoDescription(String input) throws SnoraxException {
-        String description = input.substring(5).trim();
-        if (description.isEmpty()) {
-            throw new SnoraxException("cannot be empty bro");
-        }
-        return description;
-    }
-
-    /**
-     * Parses the description and deadline from a deadline command.
-     *
-     * @param input The deadline command string.
-     * @return An array containing the description at index 0 and the deadline at
-     *         index 1.
-     * @throws SnoraxException If the description or deadline is missing or invalid.
-     */
-    public static String[] parseDeadline(String input) throws SnoraxException {
-        String[] parts = input.substring(9).split(" /by ");
-        if (parts.length < 2 || parts[0].trim().isEmpty()) {
-            throw new SnoraxException("cannot be empty bro");
-        }
-        return new String[] { parts[0].trim(), parts[1].trim() };
-    }
-
-    /**
-     * Parses the description, start time, and end time from an event command.
-     *
-     * @param input The event command string.
-     * @return An array containing the description at index 0, start time at index
-     *         1, and end time at index 2.
-     * @throws SnoraxException If any required information is missing or invalid.
-     */
-    public static String[] parseEvent(String input) throws SnoraxException {
-        String remaining = input.substring(6);
-        String[] eventParts = remaining.split(" /from | /to ");
-        if (eventParts.length < 3 || eventParts[0].trim().isEmpty()) {
-            throw new SnoraxException("cannot be empty bro");
-        }
-        return new String[] { eventParts[0].trim(), eventParts[1].trim(), eventParts[2].trim() };
     }
 }
