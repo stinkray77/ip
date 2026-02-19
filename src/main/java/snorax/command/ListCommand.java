@@ -4,10 +4,16 @@ import snorax.storage.Storage;
 import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
 
+import java.util.stream.IntStream;
+import java.util.stream.Collectors;
+
 /**
  * Represents a command to list all tasks.
  */
 public class ListCommand extends Command {
+    private static final int TASK_NUMBER_OFFSET = 1;
+    private static final String EMPTY_LIST_MESSAGE = "You have no tasks in your list.";
+    private static final String HEADER = "Here are the tasks in your list:\n";
 
     /**
      * Executes the list command by displaying all tasks.
@@ -19,14 +25,16 @@ public class ListCommand extends Command {
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showTaskList(tasks);
-        if (tasks.size() == 0) {
-            return "You have no tasks in your list.";
+
+        if (tasks.isEmpty()) {
+            return EMPTY_LIST_MESSAGE;
         }
-        StringBuilder result = new StringBuilder("Here are the tasks in your list:\n");
-        for (int i = 0; i < tasks.size(); i++) {
-            result.append((i + 1)).append(". ").append(tasks.getTask(i)).append("\n");
-        }
-        return result.toString().trim();
+
+        String result = IntStream.range(0, tasks.size())
+                .mapToObj(i -> (i + TASK_NUMBER_OFFSET) + ". " + tasks.getTask(i))
+                .collect(Collectors.joining("\n", HEADER, ""));
+
+        return result.trim();
     }
 
     /**
