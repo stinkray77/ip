@@ -8,6 +8,7 @@ import snorax.command.FindCommand;
 import snorax.command.ListCommand;
 import snorax.command.MarkCommand;
 import snorax.command.UnmarkCommand;
+import snorax.command.SortCommand;
 import snorax.exception.SnoraxException;
 import snorax.task.Deadline;
 import snorax.task.Event;
@@ -26,6 +27,7 @@ public class Parser {
     private static final String COMMAND_DEADLINE = "deadline";
     private static final String COMMAND_EVENT = "event";
     private static final String COMMAND_FIND = "find";
+    private static final String COMMAND_SORT = "sort";
 
     private static final String DELIMITER_BY = "/by";
     private static final String DELIMITER_FROM = "/from";
@@ -70,6 +72,8 @@ public class Parser {
                 return parseEventCommand(parts);
             case COMMAND_FIND:
                 return parseFindCommand(parts);
+            case COMMAND_SORT:
+                return parseSortCommand(parts);
             default:
                 throw new SnoraxException("I don't understand that command!");
         }
@@ -148,6 +152,15 @@ public class Parser {
         String keyword = parts[1].trim();
         validateNotEmpty(keyword, "The search keyword cannot be empty.");
         return new FindCommand(keyword);
+    }
+
+    private static Command parseSortCommand(String[] parts) throws SnoraxException {
+        if (parts.length < 2) {
+            return new SortCommand(); // Default: sort all
+        }
+
+        String sortType = parts[1].trim();
+        return new SortCommand(sortType);
     }
 
     private static void validateCommandHasArgument(String[] parts, String commandName)

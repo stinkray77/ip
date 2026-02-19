@@ -1,7 +1,11 @@
 package snorax.tasklist;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import snorax.task.Task;
+import snorax.task.Deadline;
+import snorax.task.Event;
 
 /**
  * Represents a list of tasks.
@@ -96,5 +100,97 @@ public class TaskList {
      */
     public boolean isEmpty() {
         return tasks.isEmpty();
+    }
+
+    /**
+     * Sorts all tasks by type and chronologically.
+     * Deadlines are sorted by their due date, Events by start time, Todos appear
+     * last.
+     */
+    public void sortTasks() {
+        tasks.sort(Comparator
+                .comparing(this::getTaskPriority)
+                .thenComparing(this::getTaskDateTime));
+    }
+
+    /**
+     * Sorts only deadline tasks chronologically and keeps other tasks in original
+     * order.
+     */
+    public void sortDeadlines() {
+        ArrayList<Task> sorted = new ArrayList<>();
+        ArrayList<Task> nonDeadlines = new ArrayList<>();
+
+        // Separate deadlines from other tasks
+        for (Task task : tasks) {
+            if (task instanceof Deadline) {
+                sorted.add(task);
+            } else {
+                nonDeadlines.add(task);
+            }
+        }
+
+        // Sort deadlines chronologically
+        sorted.sort(Comparator.comparing(task -> ((Deadline) task).getByDateTime()));
+
+        // Add non-deadline tasks back
+        sorted.addAll(nonDeadlines);
+
+        this.tasks = sorted;
+    }
+
+    /**
+     * Sorts only event tasks chronologically by start time.
+     */
+    public void sortEvents() {
+        ArrayList<Task> sorted = new ArrayList<>();
+        ArrayList<Task> nonEvents = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if (task instanceof Event) {
+                sorted.add(task);
+            } else {
+                nonEvents.add(task);
+            }
+        }
+
+        sorted.sort(Comparator.comparing(task -> ((Event) task).getFromDateTime()));
+        sorted.addAll(nonEvents);
+
+        this.tasks = sorted;
+    }
+
+    /**
+     * Gets the priority of a task for sorting.
+     * Deadlines have highest priority (0), Events next (1), Todos last (2).
+     *
+     * @param task The task to get priority for.
+     * @return The priority value.
+     */
+    private int getTaskPriority(Task task) {
+        if (task instanceof Deadline) {
+            return 0;
+        } else if (task instanceof Event) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+    /**
+     * Gets the comparable date/time of a task for sorting.
+     *
+     * @param task The task to get date/time from.
+     * @return The task's date/time or a far future date for todos.
+     */
+    private Comparable getTaskDateTime(Task task) {
+        if (task instanceof Deadline) {
+            return ((Deadline) task).getByDateTime();
+        } else if (task instanceof Event) {
+            return ((Event) task).getFromDateTime();
+        } else {
+            // Todos don't have dates, so they go to the end
+            return java.time.LocalDateTime.MAX;
+        }
     }
 }
