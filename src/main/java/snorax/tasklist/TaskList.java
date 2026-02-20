@@ -52,13 +52,10 @@ public class TaskList {
      * @return The deleted task.
      */
     public Task deleteTask(int index) {
-        assert index >= FIRST_TASK_INDEX && index < tasks.size()
-                : "Index must be within valid range";
-        int sizeBefore = tasks.size();
-        Task removed = tasks.remove(index);
-        assert tasks.size() == sizeBefore - 1 : "Task should be removed from list";
-        assert removed != null : "Removed task should not be null";
-        return removed;
+        if (index < 0 || index >= tasks.size()) {
+            throw new IndexOutOfBoundsException("Index must be within valid range");
+        }
+        return tasks.remove(index);
     }
 
     /**
@@ -68,11 +65,10 @@ public class TaskList {
      * @return The task at the specified index.
      */
     public Task getTask(int index) {
-        assert index >= FIRST_TASK_INDEX && index < tasks.size()
-                : "Index must be within valid range";
-        Task task = tasks.get(index);
-        assert task != null : "Retrieved task should not be null";
-        return task;
+        if (index < 0 || index >= tasks.size()) {
+            throw new IndexOutOfBoundsException("Index must be within valid range");
+        }
+        return tasks.get(index);
     }
 
     /**
