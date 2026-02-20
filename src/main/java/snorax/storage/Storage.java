@@ -165,6 +165,7 @@ public class Storage {
      */
     public void save(ArrayList<Task> tasks) throws SnoraxException {
         File file = new File(filePath);
+        file.getParentFile().mkdirs();
 
         if (file.exists() && !file.canWrite()) {
             throw new SnoraxException("Cannot write to data file: " + filePath
