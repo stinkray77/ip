@@ -3,8 +3,11 @@ package snorax.ui;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 
 /**
  * Represents a dialog box in the chat interface.
@@ -14,17 +17,17 @@ public class DialogBox extends HBox {
     private static final String USER_BUBBLE_STYLE = "-fx-background-color: #89b4fa;"
             + "-fx-background-radius: 18 18 4 18;"
             + "-fx-padding: 10 14 10 14;"
-            + "-fx-max-width: 320;";
+            + "-fx-max-width: 280;";
 
     private static final String BOT_BUBBLE_STYLE = "-fx-background-color: #313244;"
             + "-fx-background-radius: 18 18 18 4;"
             + "-fx-padding: 10 14 10 14;"
-            + "-fx-max-width: 320;";
+            + "-fx-max-width: 280;";
 
     private static final String ERROR_BUBBLE_STYLE = "-fx-background-color: #f38ba8;"
             + "-fx-background-radius: 18 18 18 4;"
             + "-fx-padding: 10 14 10 14;"
-            + "-fx-max-width: 320;";
+            + "-fx-max-width: 280;";
 
     private static final String USER_TEXT_STYLE = "-fx-text-fill: #1e1e2e;"
             + "-fx-font-size: 13px;"
@@ -47,17 +50,35 @@ public class DialogBox extends HBox {
             + "-fx-font-size: 10px;"
             + "-fx-font-weight: bold;";
 
+    private static final int AVATAR_RADIUS = 18;
+
     private DialogBox(String message, boolean isUser, boolean isError) {
         Label bubble = createBubble(message, isUser, isError);
+        ImageView avatar = createAvatar(isUser);
 
         setSpacing(8);
-        setPadding(new Insets(2, 0, 2, 0));
+        setPadding(new Insets(4, 0, 4, 0));
 
         if (isUser) {
-            buildUserLayout(bubble);
+            buildUserLayout(bubble, avatar);
         } else {
-            buildBotLayout(bubble, isError);
+            buildBotLayout(bubble, avatar, isError);
         }
+    }
+
+    private ImageView createAvatar(boolean isUser) {
+        String path = isUser ? "/images/DaUser.png" : "/images/DaSnorax.png";
+        Image image = new Image(DialogBox.class.getResourceAsStream(path));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(AVATAR_RADIUS * 2);
+        imageView.setFitHeight(AVATAR_RADIUS * 2);
+        imageView.setPreserveRatio(false);
+
+        // Clip to circle
+        Circle clip = new Circle(AVATAR_RADIUS, AVATAR_RADIUS, AVATAR_RADIUS);
+        imageView.setClip(clip);
+
+        return imageView;
     }
 
     private Label createBubble(String message, boolean isUser, boolean isError) {
@@ -70,16 +91,16 @@ public class DialogBox extends HBox {
             bubble.setStyle(BOT_BUBBLE_STYLE + BOT_TEXT_STYLE);
         }
         bubble.setWrapText(true);
-        bubble.setMaxWidth(320);
+        bubble.setMaxWidth(280);
         return bubble;
     }
 
-    private void buildUserLayout(Label bubble) {
+    private void buildUserLayout(Label bubble, ImageView avatar) {
         setAlignment(Pos.CENTER_RIGHT);
-        getChildren().add(bubble);
+        getChildren().addAll(bubble, avatar);
     }
 
-    private void buildBotLayout(Label bubble, boolean isError) {
+    private void buildBotLayout(Label bubble, ImageView avatar, boolean isError) {
         String senderLabel = isError ? "⚠ Snorax" : "Snorax";
         String labelStyle = isError ? ERROR_LABEL_STYLE : BOT_LABEL_STYLE;
 
@@ -90,7 +111,7 @@ public class DialogBox extends HBox {
         botBox.setAlignment(Pos.TOP_LEFT);
 
         setAlignment(Pos.CENTER_LEFT);
-        getChildren().add(botBox);
+        getChildren().addAll(avatar, botBox);
     }
 
     /**
