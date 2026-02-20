@@ -46,11 +46,8 @@ public class FindCommandTest {
 
     @Test
     public void testExecute_noMatchingTasks() {
-        FindCommand command = new FindCommand("homework");
-        assertDoesNotThrow(() -> command.execute(tasks, ui, storage));
-
-        String output = outContent.toString();
-        assertTrue(output.contains("No matching tasks found"));
+        String result = new FindCommand("homework").execute(tasks, ui, storage);
+        assertTrue(result.contains("No matching tasks found bro"));
     }
 
     @Test
