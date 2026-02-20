@@ -1,7 +1,8 @@
 T | 0 | read book
 D | 0 | return book | 2019-12-02 1800
-E | 1 | project meeting | 2019-08-06 1400 | 2019-08-06 1600
+E | 0 | project meeting | 2019-08-06 1400 | 2019-08-06 1600
 T | 0 | smoke
-T | 0 | smoke
+T | 1 | smoke
 T | 0 | drink water
 T | 0 | smoke
+D | 0 | finish cs2103 | 2026-02-28 2359
