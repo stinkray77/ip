@@ -13,40 +13,40 @@ public class DeleteCommand extends Command {
     private int index;
 
     /**
-     * Constructs a DeleteCommand with the specified task index.
+     * Constructs a DeleteCommand with the given task index.
      *
-     * @param index The index of the task to delete (0-based).
+     * @param index The zero-based index of the task to delete.
      */
     public DeleteCommand(int index) {
         this.index = index;
     }
 
-    /**
-     * Executes the delete command by removing the specified task from the list.
-     *
-     * @param tasks   The task list containing all tasks.
-     * @param ui      The user interface for displaying messages.
-     * @param storage The storage handler for saving tasks.
-     * @throws SnoraxException If the task index is invalid.
-     */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
-        Task removedTask = tasks.deleteTask(index);
-        storage.save(tasks.getTasks());
-        ui.showTaskDeleted(removedTask, tasks.size());
-        return "done bro removed task:\n  "
-                + removedTask
-                + "\nNow you have "
-                + tasks.size()
-                + " tasks in the list.";
+        if (tasks.isEmpty()) {
+            throw new SnoraxException("There are no tasks to delete.");
+        }
+        if (index >= tasks.size()) {
+            throw new SnoraxException("Task " + (index + 1) + " does not exist.\n"
+                    + "You have " + tasks.size() + " task(s). "
+                    + "Please enter a number between 1 and " + tasks.size() + ".");
+        }
 
+        Task removed = tasks.deleteTask(index);
+
+        try {
+            storage.save(tasks.getTasks());
+        } catch (SnoraxException e) {
+            // Roll back deletion if save fails
+            tasks.addTask(removed);
+            throw new SnoraxException("Failed to save after deletion: " + e.getMessage()
+                    + "\nTask was not deleted.");
+        }
+
+        return "Noted. I've removed this task:\n  " + removed
+                + "\nNow you have " + tasks.size() + " task(s) in the list.";
     }
 
-    /**
-     * Indicates whether this command will exit the application.
-     *
-     * @return false, as this command does not exit the application.
-     */
     @Override
     public boolean isExit() {
         return false;
