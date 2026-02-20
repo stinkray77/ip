@@ -2,10 +2,10 @@ package snorax.tasklist;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
-import snorax.task.Task;
+
 import snorax.task.Deadline;
 import snorax.task.Event;
+import snorax.task.Task;
 
 /**
  * Represents a list of tasks.
