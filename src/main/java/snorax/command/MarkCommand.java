@@ -13,36 +13,38 @@ public class MarkCommand extends Command {
     private int index;
 
     /**
-     * Constructs a MarkCommand with the specified task index.
+     * Constructs a MarkCommand with the given task index.
      *
-     * @param index The index of the task to mark (0-based).
+     * @param index The zero-based index of the task to mark.
      */
     public MarkCommand(int index) {
         this.index = index;
     }
 
-    /**
-     * Executes the mark command by marking the specified task as done.
-     *
-     * @param tasks   The task list containing all tasks.
-     * @param ui      The user interface for displaying messages.
-     * @param storage The storage handler for saving tasks.
-     * @throws SnoraxException If the task index is invalid.
-     */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
+        if (tasks.isEmpty()) {
+            throw new SnoraxException("There are no tasks to mark.");
+        }
+        if (index >= tasks.size()) {
+            throw new SnoraxException("Task " + (index + 1) + " does not exist.\n"
+                    + "You have " + tasks.size() + " task(s). "
+                    + "Please enter a number between 1 and " + tasks.size() + ".");
+        }
+
         Task task = tasks.getTask(index);
+
+        if (task.isDone()) {
+            throw new SnoraxException("Task " + (index + 1) + " is already marked as done:\n"
+                    + task);
+        }
+
         task.markAsDone();
         storage.save(tasks.getTasks());
-        ui.showTaskMarked(task);
-        return "good job, marked as done:\n  " + task;
+
+        return "Nice! I've marked this task as done:\n  " + task;
     }
 
-    /**
-     * Indicates whether this command will exit the application.
-     *
-     * @return false, as this command does not exit the application.
-     */
     @Override
     public boolean isExit() {
         return false;

@@ -43,21 +43,20 @@ public class Parser {
      * @throws SnoraxException If the input is invalid or cannot be parsed.
      */
     public static Command parse(String input) throws SnoraxException {
-        assert input != null : "Input cannot be null";
-
-        String trimmedInput = input.trim();
-        if (trimmedInput.isEmpty()) {
+        if (input == null || input.trim().isEmpty()) {
             throw new SnoraxException("Please enter a command!");
         }
 
-        String[] parts = trimmedInput.split(" ", 2);
+        // Normalise multiple spaces to single space
+        String normalised = input.trim().replaceAll("\\s+", " ");
+        String[] parts = normalised.split(" ", 2);
         String commandWord = parts[0].toLowerCase();
 
         switch (commandWord) {
             case COMMAND_BYE:
-                return parseExitCommand();
+                return new ExitCommand();
             case COMMAND_LIST:
-                return parseListCommand();
+                return new ListCommand();
             case COMMAND_MARK:
                 return parseMarkCommand(parts);
             case COMMAND_UNMARK:
@@ -75,134 +74,169 @@ public class Parser {
             case COMMAND_SORT:
                 return parseSortCommand(parts);
             default:
-                throw new SnoraxException("I don't understand that command!");
+                throw new SnoraxException("Unknown command: '" + commandWord + "'\n"
+                        + "Valid commands: todo, deadline, event, list, mark, unmark, "
+                        + "delete, find, sort, bye");
         }
     }
 
-    private static Command parseExitCommand() {
-        return new ExitCommand();
-    }
-
-    private static Command parseListCommand() {
-        return new ListCommand();
-    }
-
     private static Command parseMarkCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "mark");
-        int taskIndex = parseTaskIndex(parts[1]);
-        return new MarkCommand(taskIndex);
+        validateHasArgument(parts, "mark <task number>");
+        return new MarkCommand(parseTaskIndex(parts[1], "mark"));
     }
 
     private static Command parseUnmarkCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "unmark");
-        int taskIndex = parseTaskIndex(parts[1]);
-        return new UnmarkCommand(taskIndex);
+        validateHasArgument(parts, "unmark <task number>");
+        return new UnmarkCommand(parseTaskIndex(parts[1], "unmark"));
     }
 
     private static Command parseDeleteCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "delete");
-        int taskIndex = parseTaskIndex(parts[1]);
-        return new DeleteCommand(taskIndex);
+        validateHasArgument(parts, "delete <task number>");
+        return new DeleteCommand(parseTaskIndex(parts[1], "delete"));
     }
 
     private static Command parseTodoCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "todo");
+        validateHasArgument(parts, "todo <description>");
         String description = parts[1].trim();
-        validateNotEmpty(description, "The description of a todo cannot be empty.");
+        validateNotEmpty(description, "Todo description cannot be empty.\nUsage: todo <description>");
+        validateNoSpecialDelimiters(description, "todo description");
         return new AddCommand(new Todo(description));
     }
 
     private static Command parseDeadlineCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "deadline");
+        validateHasArgument(parts, "deadline <description> /by <date time>");
+
+        // Check for multiple /by
+        long byCount = countOccurrences(parts[1], DELIMITER_BY);
+        if (byCount > 1) {
+            throw new SnoraxException("Multiple '/by' found. Please use only one.\n"
+                    + "Usage: deadline <description> /by <date time>");
+        }
 
         String[] deadlineParts = parts[1].split(DELIMITER_BY, 2);
-        validateDeadlineFormat(deadlineParts);
+        if (deadlineParts.length < 2) {
+            throw new SnoraxException("Missing '/by' in deadline command.\n"
+                    + "Usage: deadline <description> /by <yyyy-MM-dd HHmm>");
+        }
 
         String description = deadlineParts[0].trim();
         String by = deadlineParts[1].trim();
 
-        validateNotEmpty(description, "The description of a deadline cannot be empty.");
-        validateNotEmpty(by, "The deadline time cannot be empty.");
+        validateNotEmpty(description, "Deadline description cannot be empty.\n"
+                + "Usage: deadline <description> /by <yyyy-MM-dd HHmm>");
+        validateNotEmpty(by, "Deadline time cannot be empty.\n"
+                + "Usage: deadline <description> /by <yyyy-MM-dd HHmm>");
+        validateNoSpecialDelimiters(description, "deadline description");
 
         return new AddCommand(new Deadline(description, by));
     }
 
     private static Command parseEventCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "event");
+        validateHasArgument(parts, "event <description> /from <start> /to <end>");
 
-        String[] eventParts = parts[1].split(DELIMITER_FROM, 2);
-        validateEventHasFrom(eventParts);
+        // Check for multiple /from or /to
+        long fromCount = countOccurrences(parts[1], DELIMITER_FROM);
+        long toCount = countOccurrences(parts[1], DELIMITER_TO);
 
-        String description = eventParts[0].trim();
-        String[] timeParts = eventParts[1].split(DELIMITER_TO, 2);
-        validateEventHasTo(timeParts);
+        if (fromCount > 1) {
+            throw new SnoraxException("Multiple '/from' found. Please use only one.\n"
+                    + "Usage: event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
+        }
+        if (toCount > 1) {
+            throw new SnoraxException("Multiple '/to' found. Please use only one.\n"
+                    + "Usage: event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
+        }
 
-        String from = timeParts[0].trim();
-        String to = timeParts[1].trim();
+        String[] fromParts = parts[1].split(DELIMITER_FROM, 2);
+        if (fromParts.length < 2) {
+            throw new SnoraxException("Missing '/from' in event command.\n"
+                    + "Usage: event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
+        }
 
-        validateNotEmpty(description, "The description of an event cannot be empty.");
-        validateNotEmpty(from, "The start time cannot be empty.");
-        validateNotEmpty(to, "The end time cannot be empty.");
+        String description = fromParts[0].trim();
+        String[] toParts = fromParts[1].split(DELIMITER_TO, 2);
+
+        if (toParts.length < 2) {
+            throw new SnoraxException("Missing '/to' in event command.\n"
+                    + "Usage: event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
+        }
+
+        String from = toParts[0].trim();
+        String to = toParts[1].trim();
+
+        validateNotEmpty(description, "Event description cannot be empty.");
+        validateNotEmpty(from, "Event start time cannot be empty.");
+        validateNotEmpty(to, "Event end time cannot be empty.");
+        validateNoSpecialDelimiters(description, "event description");
 
         return new AddCommand(new Event(description, from, to));
     }
 
     private static Command parseFindCommand(String[] parts) throws SnoraxException {
-        validateCommandHasArgument(parts, "find");
+        validateHasArgument(parts, "find <keyword>");
         String keyword = parts[1].trim();
-        validateNotEmpty(keyword, "The search keyword cannot be empty.");
+        validateNotEmpty(keyword, "Search keyword cannot be empty.\nUsage: find <keyword>");
         return new FindCommand(keyword);
     }
 
     private static Command parseSortCommand(String[] parts) throws SnoraxException {
         if (parts.length < 2) {
-            return new SortCommand(); // Default: sort all
+            return new SortCommand();
         }
-
-        String sortType = parts[1].trim();
+        String sortType = parts[1].trim().toLowerCase();
+        if (!sortType.equals("deadline") && !sortType.equals("event") && !sortType.equals("all")) {
+            throw new SnoraxException("Invalid sort type: '" + sortType + "'\n"
+                    + "Usage: sort | sort all | sort deadline | sort event");
+        }
         return new SortCommand(sortType);
     }
 
-    private static void validateCommandHasArgument(String[] parts, String commandName)
-            throws SnoraxException {
-        if (parts.length < 2) {
-            throw new SnoraxException("The " + commandName + " command requires an argument!");
+    private static void validateHasArgument(String[] parts, String usage) throws SnoraxException {
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new SnoraxException("Missing argument.\nUsage: " + usage);
         }
     }
 
     private static void validateNotEmpty(String value, String errorMessage) throws SnoraxException {
-        if (value.isEmpty()) {
+        if (value.trim().isEmpty()) {
             throw new SnoraxException(errorMessage);
         }
     }
 
-    private static void validateDeadlineFormat(String[] parts) throws SnoraxException {
-        if (parts.length < 2) {
-            throw new SnoraxException("Please use format: deadline <description> /by <time>");
+    private static void validateNoSpecialDelimiters(String value, String field)
+            throws SnoraxException {
+        if (value.contains("|")) {
+            throw new SnoraxException("The character '|' is not allowed in " + field + ".");
         }
     }
 
-    private static void validateEventHasFrom(String[] parts) throws SnoraxException {
-        if (parts.length < 2) {
-            throw new SnoraxException("Please use format: event <description> /from <start> /to <end>");
+    private static long countOccurrences(String text, String target) {
+        int count = 0;
+        int idx = 0;
+        while ((idx = text.indexOf(target, idx)) != -1) {
+            count++;
+            idx += target.length();
         }
+        return count;
     }
 
-    private static void validateEventHasTo(String[] parts) throws SnoraxException {
-        if (parts.length < 2) {
-            throw new SnoraxException("Please use format: event <description> /from <start> /to <end>");
-        }
-    }
+    private static int parseTaskIndex(String indexString, String command) throws SnoraxException {
+        String trimmed = indexString.trim();
 
-    private static int parseTaskIndex(String indexString) throws SnoraxException {
+        // Check for non-numeric input
+        if (!trimmed.matches("\\d+")) {
+            throw new SnoraxException("'" + trimmed + "' is not a valid task number.\n"
+                    + "Usage: " + command + " <task number>");
+        }
+
         try {
-            int index = Integer.parseInt(indexString.trim()) - TASK_INDEX_OFFSET;
+            int index = Integer.parseInt(trimmed) - TASK_INDEX_OFFSET;
             if (index < 0) {
-                throw new SnoraxException("Task number must be positive!");
+                throw new SnoraxException("Task number must be 1 or greater.");
             }
             return index;
         } catch (NumberFormatException e) {
-            throw new SnoraxException("Please provide a valid task number!");
+            throw new SnoraxException("Task number is too large. Please enter a valid number.");
         }
     }
 }
