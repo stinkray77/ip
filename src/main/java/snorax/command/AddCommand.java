@@ -2,6 +2,8 @@ package snorax.command;
 
 import snorax.exception.SnoraxException;
 import snorax.storage.Storage;
+import snorax.task.Deadline;
+import snorax.task.Event;
 import snorax.task.Task;
 import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
@@ -13,39 +15,54 @@ public class AddCommand extends Command {
     private Task task;
 
     /**
-     * Constructs an AddCommand with the specified task.
+     * Constructs an AddCommand with the given task.
      *
-     * @param task The task to be added.
+     * @param task The task to add.
      */
     public AddCommand(Task task) {
         this.task = task;
     }
 
-    /**
-     * Executes the add command by adding the task to the task list,
-     * saving to storage, and displaying confirmation to the user.
-     *
-     * @param tasks   The task list to add the task to.
-     * @param ui      The UI to display messages.
-     * @param storage The storage to save the updated task list.
-     * @throws SnoraxException If there is an error saving to storage.
-     */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws SnoraxException {
+        // Validate date/time before adding
+        try {
+            if (task instanceof Deadline) {
+                Deadline d = (Deadline) task;
+                Deadline.validate(d.getBy());
+            } else if (task instanceof Event) {
+                Event e = (Event) task;
+                Event.validate(e.getFrom(), e.getTo());
+            }
+        } catch (IllegalArgumentException e) {
+            throw new SnoraxException(e.getMessage());
+        }
+
+        // Check for duplicate tasks
+        for (int i = 0; i < tasks.size(); i++) {
+            Task existing = tasks.getTask(i);
+            if (existing.toString().equals(task.toString())) {
+                throw new SnoraxException(
+                        "A duplicate task already exists at position " + (i + 1) + ":\n"
+                                + existing + "\nPlease add a different task.");
+            }
+        }
+
         tasks.addTask(task);
-        storage.save(tasks.getTasks());
-        ui.showTaskAdded(task, tasks.size());
-        return "ok added this task liao: \n "
-                + task + "\nNow you have "
-                + tasks.size()
-                + " tasks in the list.";
+
+        try {
+            storage.save(tasks.getTasks());
+        } catch (SnoraxException e) {
+            // Roll back the add if save fails
+            tasks.deleteTask(tasks.size() - 1);
+            throw new SnoraxException("Failed to save task: " + e.getMessage()
+                    + "\nTask was not added.");
+        }
+
+        return "Got it. I've added this task:\n  " + task
+                + "\nNow you have " + tasks.size() + " task(s) in the list.";
     }
 
-    /**
-     * Indicates whether this command will cause the application to exit.
-     *
-     * @return false, as this command does not exit the application.
-     */
     @Override
     public boolean isExit() {
         return false;
