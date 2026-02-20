@@ -1,30 +1,45 @@
-# Duke User Guide
+# 🐾 Snorax — Task Management Chatbot
 
-// Update the title above to match the actual product name
+> "The best way to get things done is to simply begin." — unknown
 
-// Product screenshot goes here
+Snorax is a **desktop chatbot** for managing your tasks, built with _Java_ and _JavaFX_.
 
-// Product intro goes here
+## Features
+- Add `todo`, `deadline`, and `event` tasks
+- Mark tasks as **done** or ~~not done~~
+- Find tasks by keyword
+- Auto-saves to local file storage
+- Duplicate task detection
 
-## Adding deadlines
+## How to Run
+1. Ensure you have **Java 17** installed
+2. Clone this repository
+3. Run the following command:
 
-// Describe the action and its outcome.
-
-// Give examples of usage
-
-Example: `keyword (optional arguments)`
-
-// A description of the expected outcome goes here
-
+```bash
+./gradlew run
 ```
-expected output
-```
 
-## Feature ABC
+4. Type commands in the chat box and press **Send**
 
-// Feature details
+## Commands
 
+| Command | Format |
+|---|---|
+| Add todo | `todo <description>` |
+| Add deadline | `deadline <desc> /by <yyyy-MM-dd HHmm>` |
+| Add event | `event <desc> /from <datetime> /to <datetime>` |
+| Delete | `delete <index>` |
+| Find | `find <keyword>` |
 
-## Feature XYZ
+## Progress Checklist
+- [x] Todo tasks
+- [x] Deadline tasks
+- [x] Event tasks
+- [x] GUI with JavaFX
+- [x] Persistent storage
+- [ ] Recurring tasks
 
-// Feature details
+## Resources
+- [JavaFX Documentation](https://openjfx.io/)
+- [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)
