@@ -1,13 +1,13 @@
 package snorax.command;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import snorax.storage.Storage;
 import snorax.task.Task;
 import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Represents a command to find tasks containing a specific keyword.

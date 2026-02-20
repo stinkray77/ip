@@ -3,3 +3,5 @@ D | 0 | return book | 2019-12-02 1800
 E | 1 | project meeting | 2019-08-06 1400 | 2019-08-06 1600
 T | 0 | smoke
 T | 0 | smoke
+T | 0 | drink water
+T | 0 | smoke

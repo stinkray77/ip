@@ -2,6 +2,7 @@ package snorax.ui;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import snorax.task.Task;
 import snorax.tasklist.TaskList;
 

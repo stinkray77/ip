@@ -1,11 +1,11 @@
 package snorax.command;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import snorax.storage.Storage;
 import snorax.tasklist.TaskList;
 import snorax.ui.Ui;
-
-import java.util.stream.IntStream;
-import java.util.stream.Collectors;
 
 /**
  * Represents a command to list all tasks.
